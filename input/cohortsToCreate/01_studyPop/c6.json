@@ -2298,8 +2298,8 @@
           },
           {
             "Criteria": {
-              "ProcedureOccurrence": {
-                "CodesetId": 4
+              "Specimen": {
+                "CodesetId": 3
               }
             },
             "StartWindow": {
@@ -2319,8 +2319,8 @@
           },
           {
             "Criteria": {
-              "Specimen": {
-                "CodesetId": 3
+              "ProcedureOccurrence": {
+                "CodesetId": 4
               }
             },
             "StartWindow": {
@@ -2421,7 +2421,7 @@
             },
             "Occurrence": {
               "Type": 0,
-              "Count": 1
+              "Count": 0
             }
           }
         ],

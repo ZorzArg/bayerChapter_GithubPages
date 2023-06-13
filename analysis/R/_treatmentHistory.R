@@ -1,6 +1,3 @@
-# Treatment Patterns code (modification of TreatmentPatterns)
-
-
 # Define treatment history---------------------
 
 defineTreatmentHistory <- function(cohorts, ...) {
@@ -147,15 +144,11 @@ treatmentHistory <- function(executionSettings,
     dplyr::filter(type == "studyPop") %>%
     dplyr::pull(cohort_name)
 
-  # eventCohortNames <- treatmentHistorySettings$cohorts %>%
-  #   dplyr::filter(type == "event") %>%
-  #   dplyr::pull(cohort_name)
-
   eventCohortNames <- treatmentHistorySettings$cohorts %>%
     dplyr::filter(type == "event") %>%
     dplyr::mutate(eventFullName = dplyr::case_when(
       cohort_name == "amitriptyline" ~ "amit",
-      #cohort_name == "benzodiazepines" ~ "benzo",
+      cohort_name == "benzodiazepines" ~ "benzo",
       cohort_name == "citalopram" ~ "cita",
       cohort_name == "clonidine" ~ "clon",
       cohort_name == "desvenlafaxine" ~ "desv",
@@ -171,11 +164,16 @@ treatmentHistory <- function(executionSettings,
       cohort_name == "raloxifene" ~ "ralo",
       cohort_name == "sertraline" ~ "sertr",
       cohort_name == "venlafaxine" ~ "venl",
-      cohort_name == "anticonvulsants" ~ "AC",
-      cohort_name == "antidepressants" ~ "AD",
-      cohort_name == "antihypertensives" ~ "AH",
-      cohort_name == "benzodiazepines" ~ "BD",
-      cohort_name == "hormoneTherapy" ~ "HT"
+      cohort_name == "anticonvulsants_lvl1" ~ "AC",
+      cohort_name == "antidepressants_lvl1" ~ "AD",
+      cohort_name == "antihypertensives_lvl1" ~ "AH",
+      cohort_name == "benzodiazepines_lvl1" ~ "BD",
+      cohort_name == "hormoneTherapy_lvl1" ~ "HT",
+      cohort_name == "anticonvulsants_lvl3" ~ "AC",
+      cohort_name == "antidepressants_lvl3" ~ "AD",
+      cohort_name == "antihypertensives_lvl3" ~ "AH",
+      cohort_name == "benzodiazepines_lvl3" ~ "BD",
+      cohort_name == "hormoneTherapy_lvl3" ~ "HT"
      )
     ) %>%
     dplyr::pull(eventFullName)
@@ -237,7 +235,7 @@ treatmentHistory <- function(executionSettings,
 
 # Treatment History Functions
 # Functions with modifications of TreatmentPatterns
-#Functions from TreatmentPatterns ConstructPathways.R
+# Functions from TreatmentPatterns ConstructPathways.R
 
 doCreateTreatmentHistory <- function(current_cohorts, targetCohortId, eventCohortIds, periodPriorToIndex, includeTreatments) {
 

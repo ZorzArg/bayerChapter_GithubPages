@@ -1,4 +1,5 @@
 ## Setup ---------------------------
+source("analysis/R/_helper.R")
 source("analysis/R/_buildCohorts.R")
 source("analysis/R/_executionSettings.R")
 options(connectionObserver = NULL)
@@ -8,7 +9,7 @@ library(tidyverse, quietly = TRUE)
 
 ## Set variables ----------------
 configBlock <- "mrktscan"
-outputFolder <- here::here("output","01_buildCohorts",configBlock)
+outputFolder <- here::here("output", "01_buildCohorts", configBlock)
 
 cohortsToCreate <- picard::cohortManifest()  %>%
   dplyr::filter(type != "diagnostics")
@@ -17,6 +18,8 @@ cohortsToCreate <- picard::cohortManifest()  %>%
 ## Set Connection  ---------------------------
 executionSettings <- getExecutionSettings(configBlock)
 
+## Drop Cohort Tables
+dropCohortTables(executionSettings = executionSettings)
 
 ## Initialize Cohort Tables
 cohortTableNames <- initializeCohortTables(executionSettings = executionSettings)
@@ -24,10 +27,8 @@ cohortTableNames <- initializeCohortTables(executionSettings = executionSettings
 
 ## Generate cohorts  ---------------------------
 
-debug(generateCohorts)
 generatedCohorts <- generateCohorts(
   cohortTableNames = cohortTableNames,
-  #con = con,
   executionSettings = executionSettings,
   cohortManifest = cohortsToCreate,
   outputFolder = outputFolder

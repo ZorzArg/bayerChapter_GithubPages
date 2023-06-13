@@ -44,7 +44,7 @@ irDesign <- function(row, ageBreaks) {
           byAge = TRUE,
           ageBreaks = ageBreaks,
           byGender = FALSE,
-          byYear = TRUE
+          byYear = FALSE
         )
 
   ### Initialize design

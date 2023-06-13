@@ -9,11 +9,11 @@ library(tidyverse, quietly = TRUE)
 ## Set variables ---------------
 configBlock <- "mrktscan"
 
-outputFolder <- here::here("output","04_postIndexDrugs",configBlock)
+outputFolder <- here::here("output", "04_postIndexDrugs", configBlock)
 outputPath <- fs::path(outputFolder)
 fs::dir_create(outputPath)
 
-cohortsToCreate <- readr::read_csv(here::here("output","01_buildCohorts",configBlock,"cohortManifest.csv"),
+cohortsToCreate <- readr::read_csv(here::here("output", "01_buildCohorts" ,configBlock, "cohortManifest.csv"),
                                    show_col_types = FALSE)
 
 targetCohorts <- cohortsToCreate %>%
@@ -35,8 +35,7 @@ startSnowflakeSession(con, executionSettings)
 
 ## Get Post-Index Drugs ---------------
 covariateKey <- cohortsToCreate %>%
-  dplyr::filter(type == "class3")
-
+  dplyr::filter(type %in% c("class3","class1"))
 
 postIndexDrugs <- purrr::pmap_dfr(
   scriptSettings,
@@ -56,3 +55,4 @@ View(postIndexDrugs)
 ## Save results - Parquet ---------------
 save_path <- fs::path(outputFolder, "postIndex")
 arrow::write_parquet(postIndexDrugs, sink = save_path)
+

@@ -22,15 +22,12 @@ startSnowflakeSession(con = con, executionSettings = executionSettings)
 
 ## Time To Event Analysis -------------------------
 eraCollapseSize <- c(30,60)
-#eraCollapseSize <- 30
+
+eventType <- c("ingredient", "class3", "class1")
 
 targetCohorts <- cohortsToCreate %>%
   dplyr::filter(type == "studyPop")
 
-#targetCohorts <- targetCohorts[3,]
-
-eventType <- c("ingredient", "class3")
-#eventType <- c("ingredient")
 
 for (i in 1:length(eraCollapseSize)) {
 
@@ -38,7 +35,6 @@ for (i in 1:length(eraCollapseSize)) {
 
     for(k in 1:length(eventType)) {
 
-  #debug(timeToInitialTreatmentData)
   ttiDat <- timeToInitialTreatmentData(executionSettings = executionSettings,
                                        eraCollapseSize = eraCollapseSize[i],
                                        eventType = eventType[k],
@@ -50,5 +46,5 @@ for (i in 1:length(eraCollapseSize)) {
 }
 
 
-#View(ttiDat$total_total)
+View(ttiDat$total)
 

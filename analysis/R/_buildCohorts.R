@@ -65,16 +65,15 @@ generateCohorts <- function(executionSettings, cohortManifest, outputFolder, con
   startSnowflakeSession(con = con, executionSettings = executionSettings)
 
   ## Generate cohorts
-  # CohortGenerator::generateCohortSet(
-  #   connection = con,
-  #   cdmDatabaseSchema = cdmSchema,
-  #   cohortDatabaseSchema = writeSchema,
-  #   cohortTableNames = cohortTableNames,
-  #   cohortDefinitionSet = cohortsToCreate,
-  #   incremental = TRUE,
-  #   incrementalFolder = incrementalFolder
-  # )
-
+  CohortGenerator::generateCohortSet(
+    connection = con,
+    cdmDatabaseSchema = cdmSchema,
+    cohortDatabaseSchema = writeSchema,
+    cohortTableNames = cohortTableNames,
+    cohortDefinitionSet = cohortsToCreate,
+    incremental = TRUE,
+    incrementalFolder = incrementalFolder
+  )
 
   ## Get cohort counts
   cohortCounts <- CohortGenerator::getCohortCounts(
@@ -96,7 +95,7 @@ generateCohorts <- function(executionSettings, cohortManifest, outputFolder, con
     dplyr::mutate(database = executionSettings$databaseId,
                   databaseFullName = dplyr::case_when(
                     database == "mrktscan" ~ "MarketScan",
-                    database == "optum" ~ "OPTUM",
+                    database == "optum" ~ "Optum Claims",
                     database == "cprd_gold" ~ "CPRD Gold",
                     database == "cprd_aurum" ~ "CPRD Aurum"
                   ),
@@ -131,11 +130,17 @@ generateCohorts <- function(executionSettings, cohortManifest, outputFolder, con
                     name == "stroke" ~ "Stroke",
                     name == "t2dm" ~ "Type 2 Diabetes",
                     name == "vte" ~ "VTE",
-                    name == "anticonvulsants" ~ "Anticonvulsants",
-                    name == "antidepressants" ~ "Antidepressants",
-                    name == "antihypertensives" ~ "Antihypertensives",
+                    name == "anticonvulsants_lvl3" ~ "Anticonvulsants (Level 3)",
+                    name == "antidepressants_lvl3" ~ "Antidepressants (Level 3)",
+                    name == "antihypertensives_lvl3" ~ "Antihypertensives (Level 3)",
+                    name == "benzodiazepines_lvl3" ~ "Benzodiazepines (Level 3)",
+                    name == "hormoneTherapy_lvl3" ~ "Hormone therapy (Level 3)",
+                    name == "anticonvulsants_lvl1" ~ "Anticonvulsants (Level 1)",
+                    name == "antidepressants_lvl1" ~ "Antidepressants (Level 1)",
+                    name == "antihypertensives_lvl1" ~ "Antihypertensives (Level 1)",
+                    name == "benzodiazepines_lvl1" ~ "Benzodiazepines (Level 1)",
+                    name == "hormoneTherapy_lvl1" ~ "Hormone therapy (Level 1)",
                     name == "benzodiazepines" ~ "Benzodiazepines",
-                    name == "hormoneTherapy" ~ "Hormone therapy",
                     name == "amitriptyline" ~ "Amitriptyline",
                     name == "citalopram" ~ "Citalopram",
                     name == "clonidine" ~ "Clonidine",
@@ -158,6 +163,10 @@ generateCohorts <- function(executionSettings, cohortManifest, outputFolder, con
 
   savePath <- fs::path(outputFolder, "cohortManifest.csv")
   readr::write_csv(x = tb, file = savePath)
+
+  savePath <- fs::path(outputFolder, paste0("cohortManifest_", str_replace_all(Sys.Date(), "-", "_"), ".csv"))
+  readr::write_csv(x = tb, file = savePath)
+
   cli::cat_bullet("Saving Generated Cohorts to ", crayon::cyan(savePath), bullet = "tick", bullet_col = "green")
 
   DatabaseConnector::disconnect(con)

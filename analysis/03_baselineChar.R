@@ -7,24 +7,24 @@ library(tidyverse, quietly = TRUE)
 
 
 ## Set variables -------------
-configBlock <- "mrktscan"
+configBlock <- "cprd_gold"
 
 outputFolder <- here::here("output", "03_baselineCharacteristics", configBlock)
 outputPath <- fs::path(outputFolder)
 fs::dir_create(outputPath)
 
-cohortsToCreate <- readr::read_csv(here::here("output","01_buildCohorts",configBlock,"cohortManifest.csv"),
+cohortsToCreate <- readr::read_csv(here::here("output", "01_buildCohorts", configBlock, "cohortManifest.csv"),
                                    show_col_types = FALSE)
 
 targetCohorts <- cohortsToCreate %>%
   dplyr::filter(type == "studyPop") %>%
   dplyr::select(id, name)
 
-timeA <- -365L
+timeA <- c(-365L, -9999L)
 timeB <- -1L
 
 baselineSettings <- tidyr::expand_grid(targetCohorts, timeA) %>%
-  dplyr::mutate(timeB = rep(timeB,6))
+  dplyr::mutate(timeB = rep(timeB, 12))
 
 baselineSettings
 

@@ -3,10 +3,13 @@ misc/
 scratch/
 output/
 setupScript.R
+keyset.R
 R/old/
 R/other
 WELCOME.md
 config.yml
+extras/
+report/
 
 
 # Mac files

@@ -1,6 +1,28 @@
 
 # Treatment Patterns --------------------------
 
+prepTPtables <- function(th, minNumPatterns = 30L) {
+
+  treatment_pathways <- th %>%
+    tidyr::pivot_wider(id_cols = person_id,
+                       names_from = event_seq,
+                       names_prefix = "event_cohort_name",
+                       values_from = event_cohort_name) %>%
+    dplyr::count(dplyr::across(tidyselect::starts_with("event_cohort_name"))) %>%
+    dplyr::mutate(End = "end", .before = "n") %>%
+    dplyr::filter(n >= minNumPatterns) %>%
+    dplyr::mutate(database = unique(th$database),
+                  cohort = unique(th$cohort),
+                  era = unique(th$era_size),
+                  event = unique(th$event_type),
+                  strata_id = unique(th$strata_id),
+                  strata = unique(th$strata))
+
+
+  return(treatment_pathways)
+
+}
+
 
 prepSankey <- function(th, minNumPatterns = 30L) {
 
@@ -13,9 +35,7 @@ prepSankey <- function(th, minNumPatterns = 30L) {
     dplyr::mutate(End = "end", .before = "n") %>%
     dplyr::filter(n >= minNumPatterns)
 
-
   links <- treatment_pathways %>%
-    #dplyr::filter(n >= 500) %>%   # Filter pathways to more than 500 to make sankey plot more readable
     dplyr::mutate(row = dplyr::row_number()) %>%
     tidyr::pivot_longer(cols = c(-row, -n),
                         names_to = 'column', values_to = 'source') %>%
@@ -41,7 +61,6 @@ prepSankey <- function(th, minNumPatterns = 30L) {
   data.table::setorder(links, cols = - "value")
 
   res <- list(
-    'treatmentPatterns' = treatment_pathways,
     'links' = links,
     'nodes' = nodes
   )
@@ -101,31 +120,59 @@ treatmentPatterns <- function(executionSettings,
 
 
   ## Create treatment patterns
+  treatmentHistoryStratas <- treatmentHistory %>%
+      dplyr::left_join(strataTbl, by = c("person_id" = "subject_id"), multiple = "all") %>%
+      dplyr::group_by(strata_id, strata)
+
+  strataIds <- unique(treatmentHistoryStratas[c("strata_id", "strata")])
 
   strataNames <- readr::read_csv(here::here("output", "02_buildStrata", executionSettings$databaseId, "strataManifest.csv"),
                                  show_col_types = FALSE) %>%
     dplyr::filter(cohort_definition_id == targetCohortId) %>%
     dplyr::mutate(nm = paste(strata_name, strata_value, sep = "_")) %>%
+    dplyr::inner_join(strataIds, by = c("strata_id", "strata")) %>%
     dplyr::pull(nm) %>%
     unique()
 
 
-  patterns <- treatmentHistory %>%
-    dplyr::left_join(strataTbl, by = c("person_id" = "subject_id"), multiple = "all") %>%
-    dplyr::group_by(strata_id, strata) %>%
+  patternsTable <- treatmentHistoryStratas %>%
     dplyr::group_split() %>%
-    purrr::map(~prepSankey(.x, minNumPatterns = minNumPatterns)) %>%
     purrr::set_names(nm = strataNames)
 
+  ## FOR DEBUGGING
+  # prepTPtables(patternsTable$total_total, minNumPatterns = minNumPatterns)
+  # prepSankey(patternsTable$total_total, minNumPatterns = minNumPatterns)
 
-  ## Save output - rds
+
+ ## Tables
+ patternsTable <- treatmentHistoryStratas %>%
+    dplyr::group_split() %>%
+    purrr::map(~prepTPtables(.x, minNumPatterns = minNumPatterns)) %>%
+    purrr::set_names(nm = strataNames) %>%
+    data.table::rbindlist(fill = TRUE)
+
+ ## Sankey plots
+ patternsSankey <- treatmentHistoryStratas %>%
+   dplyr::group_split() %>%
+   purrr::map(~prepSankey(.x, minNumPatterns = minNumPatterns)) %>%
+   purrr::set_names(nm = strataNames)
+
+
+  ## Save output - rds & csv
   save_path <- fs::path(outputFolder, paste0("treatmentPatterns_", eventType, "_", eraCollapseSize, ".rds"))
-  readr::write_rds(patterns, file = save_path)
+  readr::write_rds(patternsSankey, file = save_path)
+
+  rdsDir <- here::here("report", "data", "06_treatmentPatterns", executionSettings$databaseId, targetCohorts$name)
+  fs::dir_create(rdsDir)
+  save_path <- fs::path(rdsDir, paste0("treatmentPatterns_", eventType, "_", eraCollapseSize, ".rds"))
+  readr::write_rds(patternsSankey, file = save_path)
+
+  save_path <- fs::path(outputFolder, paste0("tp_", eventType, "_", eraCollapseSize, ".csv"))
+  readr::write_csv(patternsTable, file = save_path)
+
   cli::cat_line("\nTreatment Patterns run at: ", Sys.time())
   cli::cat_line("\nSaved to: ", save_path)
   cli::cat_line("Connection Closed\n\n")
-
-  return(patterns)
 
 }
 

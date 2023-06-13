@@ -8,11 +8,11 @@ library(data.table)
 
 
 ## Set variables ----------------------
-configBlock <- "mrktscan"
+configBlock <- "optum"
 outputFolder <- here::here("output", "06_treatmentHistory", configBlock)
 
 
-cohortsToCreate <- readr::read_csv(here::here("output","01_buildCohorts",configBlock,"cohortManifest.csv"),
+cohortsToCreate <- readr::read_csv(here::here("output", "01_buildCohorts", configBlock, "cohortManifest.csv"),
                                    show_col_types = FALSE)
 
 
@@ -23,15 +23,13 @@ startSnowflakeSession(con = con, executionSettings = executionSettings)
 
 
 ## Get Treatment History ----------------------
-eraCollapseSize <- c(30,60)
+eraCollapseSize <- c(30, 60)
+
+eventType <- c("ingredient", "class3", "class1")
 
 targetId <- cohortsToCreate %>%
   dplyr::filter(type == "studyPop") %>%
   dplyr::pull(id)
-
-#targetId <- 4
-
-eventType <- c("ingredient", "class3")
 
 
 for (i in 1:length(eraCollapseSize)) {
@@ -61,7 +59,6 @@ for (i in 1:length(eraCollapseSize)) {
           eraCollapseSize = eraCollapseSize[i]
         )
 
-  #debug(treatmentHistory)
   thDat <- treatmentHistory(executionSettings = executionSettings,
                             treatmentHistorySettings = thSettings,
                             outputFolder = outputFolder)

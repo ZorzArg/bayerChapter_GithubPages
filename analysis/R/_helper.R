@@ -1,3 +1,130 @@
+# ## Bind rows of data frames located in the same folder
+# bindTTE <- function(outputPath,
+#                     filename,
+#                     database,
+#                     cohortName)  {
+#
+#
+#   if (filename %in% c("postIndex", "incidence", "baseline", "cohortManifest", "strataManifest", "probTb", "timeTb")) {
+#
+#     path <- here::here(outputPath, database, cohortName)
+#
+#     ## List all csv files in folder
+#     filepath <- list.files(path, pattern = glue::glue("{filename}"), full.names = TRUE)
+#
+#     ## Read all files and save in list
+#     listed_files <- lapply(filepath, readr::read_csv, show_col_types = FALSE)
+#
+#     ## Created binded data frame with all data frames of list
+#     binded_df <- dplyr::bind_rows(listed_files)
+#
+#     outputPath <-  here::here(outputPath, database)
+#
+#     ## Save output
+#     df <- readr::write_csv(
+#       x = binded_df,
+#       file = file.path(outputPath, paste0(filename, "_", cohortName, ".csv")),
+#       append = FALSE
+#     )
+#
+#   } else {
+#
+#     print("Invalid option")
+#
+#   }
+#
+#   ## Delete files from directory
+#   #invisible(lapply(filepath, unlink))
+#   #return(df)
+#
+# }
+#
+#
+# ## Bind rows of data frames located in the same folder
+# bindFiles <- function(outputPath,
+#                       filename,
+#                       database)  {
+#
+#   masterFile <- here::here(outputPath, paste0(filename, "_", database, ".csv"))
+#   if (file.exists(masterFile)) {
+#     unlink(masterFile)
+#   }
+#
+#   if (filename %in% c("postIndex", "incidence", "baseline", "cohortManifest", "strataManifest", "probTb", "timeTb")) {
+#
+#     path <- here::here(outputPath, database)
+#
+#     ## List all csv files in folder
+#     filepath <- list.files(path, pattern = glue::glue("{filename}"), full.names = TRUE)
+#
+#     ## Read all files and save in list
+#     listed_files <- lapply(filepath, readr::read_csv, show_col_types = FALSE)
+#
+#     ## Created binded data frame with all data frames of list
+#     binded_df <- dplyr::bind_rows(listed_files)
+#
+#     #outputPath <- here::here("output", "09_TimePropTables")
+#
+#     ## Save output
+#     df <- readr::write_csv(
+#       x = binded_df,
+#       file = file.path(outputPath, paste0(filename, "_", database, ".csv")),
+#       append = FALSE
+#     )
+#
+#   } else {
+#
+#     print("Invalid option")
+#
+#   }
+#
+#   ## Delete files from directory
+#   invisible(lapply(filepath, unlink))
+#
+# }
+
+
+
+
+
+dropCohortTables <- function(executionSettings) {
+
+  if (executionSettings$connectionDetails$dbms == "snowflake") {
+    writeSchema <- paste(executionSettings$writeDatabase, executionSettings$writeSchema, sep = ".")
+  } else {
+    writeSchema <- executionSettings$writeSchema
+  }
+
+  name <- executionSettings$cohortTable
+  cohortTableNames <- list(cohortTable = paste0(name,"_",executionSettings$databaseId),
+                           cohortInclusionTable = paste0(name, "_inclusion_",executionSettings$databaseId),
+                           cohortInclusionResultTable = paste0(name, "_inclusion_result_",executionSettings$databaseId),
+                           cohortInclusionStatsTable = paste0(name, "_inclusion_stats_",executionSettings$databaseId),
+                           cohortSummaryStatsTable = paste0(name, "_summary_stats_",executionSettings$databaseId),
+                           cohortCensorStatsTable = paste0(name, "_censor_stats_",executionSettings$databaseId))
+
+  con <- DatabaseConnector::connect(executionSettings$connectionDetails)
+  startSnowflakeSession(con = con, executionSettings = executionSettings)
+
+  for (i in 1:length(cohortTableNames)) {
+
+    sql <-
+      "DROP TABLE @writeSchema.@tableName;"
+
+    dropSql <- SqlRender::render(
+      sql,
+      writeSchema = writeSchema,
+      tableName = cohortTableNames[i]
+    ) %>%
+      SqlRender::translate(targetDialect = executionSettings$connectionDetails$dbms)
+
+    DatabaseConnector::executeSql(connection = con, dropSql, progressBar = FALSE)
+
+  }
+
+}
+
+
 
 makeSurvTable <- function(fit) {
 
@@ -68,6 +195,11 @@ kmPlotPhoto <- function(fit, database, cohort, eventType, eraCollapseSize, tteSt
                                         paste0("km_", database, "_", cohort, "_", eventType, "_", eraCollapseSize, "_", tteStratas, ".png")),
                   width = 8,
                   height = 6)
+
+  ggplot2::ggsave(filename = here::here("report", "www", database,  cohort,
+                                        paste0("km_", database, "_", cohort, "_", eventType, "_", eraCollapseSize, "_", tteStratas, ".png")),
+                  width = 8,
+                  height = 6)
 }
 
 
@@ -97,6 +229,11 @@ kmPlotPhotoStrata <- function(fit, database, cohort, eventType, eraCollapseSize,
   p1 + p0 + plot_annotation(tag_levels = list(c("Yes", "No")))
 
   ggplot2::ggsave(filename = here::here("output", "www", database,  cohort,
+                                        paste0("km_", database, "_", cohort, "_", eventType, "_", eraCollapseSize, "_", tteStratas, ".png")),
+                  width = 14,
+                  height = 10)
+
+  ggplot2::ggsave(filename = here::here("report", "www", database,  cohort,
                                         paste0("km_", database, "_", cohort, "_", eventType, "_", eraCollapseSize, "_", tteStratas, ".png")),
                   width = 14,
                   height = 10)
@@ -148,6 +285,11 @@ kmPlotPhotoAgeStrata <- function(fit, database, cohort, eventType, eraCollapseSi
   p1 + p2 + p3 + p4  + plot_annotation(tag_levels = 'A')
 
   ggplot2::ggsave(filename = here::here("output", "www", database,  cohort,
+                                        paste0("km_", database, "_", cohort, "_", eventType, "_", eraCollapseSize, "_", tteStratas, ".png")),
+                  width = 14,
+                  height = 10)
+
+  ggplot2::ggsave(filename = here::here("report", "www", database,  cohort,
                                         paste0("km_", database, "_", cohort, "_", eventType, "_", eraCollapseSize, "_", tteStratas, ".png")),
                   width = 14,
                   height = 10)

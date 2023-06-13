@@ -7,17 +7,16 @@ options(connectionObserver = NULL)
 
 
 ## Set variables ---------------
-configBlock <- "mrktscan"
+configBlock <- "cprd_gold"
 
 outputFolder <- here::here("output", "05_incidence", configBlock)
-outputPath <- fs::path(outputFolder)
-fs::dir_create(outputPath)
+fs::dir_create(outputFolder)
 
 cohortsToCreate <- readr::read_csv(here::here("output", "01_buildCohorts", configBlock, "cohortManifest.csv"),
                                    show_col_types = FALSE)
 
 targetInputs <- cohortsToCreate %>%
-  dplyr::filter(type == "studyPop") %>%
+  dplyr::filter(type == "studyPop" & name != "c5") %>% # Excluding cohort c5 per protocol
   dplyr::select(id, name) %>%
   dplyr::rename(targetId = id, targetName = name)
 
