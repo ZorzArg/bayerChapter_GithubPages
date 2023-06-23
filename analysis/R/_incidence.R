@@ -108,11 +108,6 @@ generateIncidence <- function(executionSettings,
   cli::cat_line("\tTAR between: ", startOffset, " and ", endOffset, " days")
 
 
-  # executeResults <- CohortIncidence::executeAnalysis(
-  #   connectionDetails = executionSettings$connectionDetails,
-  #   incidenceDesign = incidenceDesign,
-  #   buildOptions = buildOptions)
-
   ### Executing results for incidence analysis
   executeResults <- executeAnalysis(
     executionSettings = executionSettings,

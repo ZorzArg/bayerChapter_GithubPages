@@ -20,7 +20,8 @@ con <- DatabaseConnector::connect(executionSettings$connectionDetails)
 startSnowflakeSession(con = con, executionSettings = executionSettings)
 
 
-## Time To Event Analysis -------------------------
+### 1. Time To Event Analysis -------------------------
+
 eraCollapseSize <- c(30,60)
 
 eventType <- c("ingredient", "class3", "class1")

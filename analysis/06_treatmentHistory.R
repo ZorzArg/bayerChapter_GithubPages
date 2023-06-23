@@ -22,7 +22,7 @@ con <- DatabaseConnector::connect(executionSettings$connectionDetails)
 startSnowflakeSession(con = con, executionSettings = executionSettings)
 
 
-## Get Treatment History ----------------------
+### 1. Get Treatment History ----------------------
 eraCollapseSize <- c(30, 60)
 
 eventType <- c("ingredient", "class3", "class1")

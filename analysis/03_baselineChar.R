@@ -7,7 +7,7 @@ library(tidyverse, quietly = TRUE)
 
 
 ## Set variables -------------
-configBlock <- "cprd_gold"
+configBlock <- "mrktscan"
 
 outputFolder <- here::here("output", "03_baselineCharacteristics", configBlock)
 outputPath <- fs::path(outputFolder)
@@ -24,7 +24,7 @@ timeA <- c(-365L, -9999L)
 timeB <- -1L
 
 baselineSettings <- tidyr::expand_grid(targetCohorts, timeA) %>%
-  dplyr::mutate(timeB = rep(timeB, 12))
+  dplyr::mutate(timeB = rep(timeB, 6))
 
 baselineSettings
 
@@ -35,7 +35,7 @@ con <- DatabaseConnector::connect(executionSettings$connectionDetails)
 startSnowflakeSession(con, executionSettings)
 
 
-## Step 1: Get Demographics  --------------------
+### Step 1: Get Demographics  --------------------
 
 demographics <- purrr::pmap_dfr(
       targetCohorts,
@@ -53,7 +53,7 @@ save_path <- fs::path(outputFolder, "demographics_baseline")
 arrow::write_parquet(demographics, sink = save_path)
 
 
-## Step 2: Get Continuous  --------------------
+### Step 2: Get Continuous  --------------------
 
 continuous <- purrr::pmap_dfr(
    targetCohorts,
@@ -71,7 +71,7 @@ save_path <- fs::path(outputFolder, "continuous_baseline")
 arrow::write_parquet(continuous, sink = save_path)
 
 
-## Step 3: Get Drugs  --------------------
+### Step 3: Get Drugs  --------------------
 
 drugs <- purrr::pmap_dfr(
   baselineSettings,
@@ -91,25 +91,7 @@ save_path <- fs::path(outputFolder, "drugs")
 arrow::write_parquet(drugs, sink = save_path)
 
 
-## Step 4: Get Conditions  --------------------
-
-conditions <- purrr::pmap_dfr(
-  baselineSettings,
-  ~conditionCovariatesMap(executionSettings = executionSettings,
-                          con = con,
-                          targetCohortsName = ..2,
-                          targetCohortsId = ..1,
-                          timeA = ..3,
-                          timeB = ..4,
-                          outputFolder = outputFolder)
-)
-
-View(conditions)
-
-### Save results - Parquet
-save_path <- fs::path(outputFolder, "conditions")
-arrow::write_parquet(conditions, sink = save_path)
-
+### Step 4: Get Conditions  --------------------
 
 conditionsGroup <- purrr::pmap_dfr(
   baselineSettings,
@@ -129,7 +111,7 @@ save_path <- fs::path(outputFolder, "condition_groups")
 arrow::write_parquet(conditionsGroup, sink = save_path)
 
 
-## Step 5: Get Cohort Covariates  --------------------
+### Step 5: Get Cohort Covariates  --------------------
 
 covariateKey <- picard::cohortManifest() %>%
   dplyr::filter(type == "covariates")
@@ -153,5 +135,3 @@ View(cohortCov)
 save_path <- fs::path(outputFolder, "cohort_covariates")
 arrow::write_parquet(cohortCov, sink = save_path)
 
-
-DatabaseConnector::disconnect(con)

@@ -1,5 +1,4 @@
-# Dependencies -------------------
-
+# Setup -------------------
 library(tidyverse)
 library(readr)
 library(fs)
@@ -7,12 +6,14 @@ library(gtsummary)
 library(ggsurvfit)
 library(arrow)
 library(patchwork)
-source("analysis/R/_helper.R")
-
-database <- "cprd_aurum"# Should be the name of the database as is in output folder
+source("analysis/R/_tte.R")
 
 
-## Time-to-event ----------------
+## Set variables -------------
+database <- c("mrktscan", "optum", "cprd_aurum", "cprd_gold")
+
+
+### 1. Time-to-event ----------------
 eraCollapseSize <- c(30,60)
 
 eventType <- c("ingredient", "class3", "class1")
@@ -32,7 +33,6 @@ for (i in 1:length(database)) {
 
           tte <- readr::read_rds(here::here("output", "08_timeToInitialTreatment", database[i], cohortManifest$name[t],
                                             paste0("tte_", eventType[g], "_", eraCollapseSize[j], ".rds")))
-
           tteStratas <- names(tte) # Number of list elements (stratas)
 
         for (k in 1:length(tteStratas)) {
@@ -74,9 +74,6 @@ for (i in 1:length(database)) {
                                                    paste0("probTb_", database[i], "_", cohortManifest$name[t], "_", eventType[g], "_", eraCollapseSize[j], "_", tteStratas[k], ".csv")))
 
             ## KM plot
-            outputFolderKM <- here::here("output", "www",  database[i], cohortManifest$name[t])
-            fs::dir_create(outputFolderKM)
-
             reportFolderKM <- here::here("report", "www",  database[i], cohortManifest$name[t])
             fs::dir_create(reportFolderKM)
 
@@ -95,7 +92,6 @@ for (i in 1:length(database)) {
             survFit <- ggsurvfit::survfit2(
               ggsurvfit::Surv(time_years, event) ~ typeAll,
               data = dataTTE)
-
 
             outputFolderCSV <- fs::path(here::here("output", "09_TimePropTables", database[i], cohortManifest$name[t]))
             fs::dir_create(outputFolderCSV)
@@ -126,8 +122,8 @@ for (i in 1:length(database)) {
 
 
             ## KM plot
-            outputFolderKM <- here::here("output", "www",  database[i], cohortManifest$name[t])
-            fs::dir_create(outputFolderKM)
+            reportFolderKM <- here::here("report", "www",  database[i], cohortManifest$name[t])
+            fs::dir_create(reportFolderKM)
 
             kmPlotPhoto(fit = survFit,
                         database = database[i],

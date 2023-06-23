@@ -33,7 +33,7 @@ con <- DatabaseConnector::connect(executionSettings$connectionDetails)
 startSnowflakeSession(con, executionSettings)
 
 
-## Get Post-Index Drugs ---------------
+### 1. Get Post-Index Drugs ---------------
 covariateKey <- cohortsToCreate %>%
   dplyr::filter(type %in% c("class3","class1"))
 
@@ -52,7 +52,7 @@ postIndexDrugs <- purrr::pmap_dfr(
 View(postIndexDrugs)
 
 
-## Save results - Parquet ---------------
+## Save results (Parquet)
 save_path <- fs::path(outputFolder, "postIndex")
 arrow::write_parquet(postIndexDrugs, sink = save_path)
 

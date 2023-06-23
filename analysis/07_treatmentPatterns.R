@@ -7,7 +7,7 @@ options(connectionObserver = NULL)
 
 
 ## Set variables ----------------------
-configBlock <- "optum"
+configBlock <- "mrktscan"
 outputFolder <- here::here("output", "07_treatmentPatterns", configBlock)
 
 cohortsToCreate <- readr::read_csv(here::here("output", "01_buildCohorts", configBlock, "cohortManifest.csv"),
@@ -20,7 +20,8 @@ con <- DatabaseConnector::connect(executionSettings$connectionDetails)
 startSnowflakeSession(con = con, executionSettings = executionSettings)
 
 
-## Treatment Patterns -------------------------
+### 1. Treatment Patterns -------------------------
+
 eraCollapseSize <- c(30, 60)
 
 eventType <- c("ingredient", "class3", "class1")

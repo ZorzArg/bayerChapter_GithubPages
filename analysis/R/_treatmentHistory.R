@@ -1,3 +1,6 @@
+# Treatment Patterns code (modification of TreatmentPatterns)
+
+
 # Define treatment history---------------------
 
 defineTreatmentHistory <- function(cohorts, ...) {
@@ -144,6 +147,10 @@ treatmentHistory <- function(executionSettings,
     dplyr::filter(type == "studyPop") %>%
     dplyr::pull(cohort_name)
 
+  # eventCohortNames <- treatmentHistorySettings$cohorts %>%
+  #   dplyr::filter(type == "event") %>%
+  #   dplyr::pull(cohort_name)
+
   eventCohortNames <- treatmentHistorySettings$cohorts %>%
     dplyr::filter(type == "event") %>%
     dplyr::mutate(eventFullName = dplyr::case_when(
@@ -235,7 +242,7 @@ treatmentHistory <- function(executionSettings,
 
 # Treatment History Functions
 # Functions with modifications of TreatmentPatterns
-# Functions from TreatmentPatterns ConstructPathways.R
+#Functions from TreatmentPatterns ConstructPathways.R
 
 doCreateTreatmentHistory <- function(current_cohorts, targetCohortId, eventCohortIds, periodPriorToIndex, includeTreatments) {
 

@@ -80,3 +80,42 @@ initializeCohortTables <- function(executionSettings) {
   return(cohortTableNames)
 
 }
+
+
+
+dropCohortTables <- function(executionSettings) {
+
+  if (executionSettings$connectionDetails$dbms == "snowflake") {
+    writeSchema <- paste(executionSettings$writeDatabase, executionSettings$writeSchema, sep = ".")
+  } else {
+    writeSchema <- executionSettings$writeSchema
+  }
+
+  name <- executionSettings$cohortTable
+  cohortTableNames <- list(cohortTable = paste0(name,"_",executionSettings$databaseId),
+                           cohortInclusionTable = paste0(name, "_inclusion_",executionSettings$databaseId),
+                           cohortInclusionResultTable = paste0(name, "_inclusion_result_",executionSettings$databaseId),
+                           cohortInclusionStatsTable = paste0(name, "_inclusion_stats_",executionSettings$databaseId),
+                           cohortSummaryStatsTable = paste0(name, "_summary_stats_",executionSettings$databaseId),
+                           cohortCensorStatsTable = paste0(name, "_censor_stats_",executionSettings$databaseId))
+
+  con <- DatabaseConnector::connect(executionSettings$connectionDetails)
+  startSnowflakeSession(con = con, executionSettings = executionSettings)
+
+  for (i in 1:length(cohortTableNames)) {
+
+    sql <-
+      "DROP TABLE @writeSchema.@tableName;"
+
+    dropSql <- SqlRender::render(
+      sql,
+      writeSchema = writeSchema,
+      tableName = cohortTableNames[i]
+    ) %>%
+      SqlRender::translate(targetDialect = executionSettings$connectionDetails$dbms)
+
+    DatabaseConnector::executeSql(connection = con, dropSql, progressBar = FALSE)
+
+  }
+
+}

@@ -1,5 +1,4 @@
 ## Setup ---------------------------
-source("analysis/R/_helper.R")
 source("analysis/R/_buildCohorts.R")
 source("analysis/R/_executionSettings.R")
 options(connectionObserver = NULL)
@@ -18,14 +17,12 @@ cohortsToCreate <- picard::cohortManifest()  %>%
 ## Set Connection  ---------------------------
 executionSettings <- getExecutionSettings(configBlock)
 
-## Drop Cohort Tables
-dropCohortTables(executionSettings = executionSettings)
 
 ## Initialize Cohort Tables
 cohortTableNames <- initializeCohortTables(executionSettings = executionSettings)
 
 
-## Generate cohorts  ---------------------------
+### 1. Generate cohorts  ---------------------------
 
 generatedCohorts <- generateCohorts(
   cohortTableNames = cohortTableNames,

@@ -76,7 +76,6 @@ strataManifest <- tibble::tribble(
   10, 1, "organicSleep", "yes", "Organic Sleep", "Yes"
 )
 
-#View(strataManifest)
 
 
 ## Create strata table ----------------------
@@ -99,7 +98,7 @@ DatabaseConnector::executeSql(connection = con, sql = sql, progressBar = FALSE)
 ## Delete from strata table
 sql <-
   "DELETE FROM @write_db_schema.@strata_table
-   WHERE cohort_definition_id  IN (@cohortId);"  %>%
+   WHERE cohort_definition_id IN (@cohortId);"  %>%
   SqlRender::render(
     write_db_schema = writeSchema,
     strata_table = strataTable,

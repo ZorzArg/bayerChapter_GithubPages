@@ -21,7 +21,7 @@ demographicBaseline <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohorts$id)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohorts$name)
   fs::dir_create(outputFolder)
 
@@ -51,7 +51,7 @@ demographicBaseline <- function(executionSettings,
   cli::cat_line("\nDemographics Covariates built at: ", tok)
   cli::cat_line("\nCovariate build took: ", tok_format)
 
-  ### get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -72,8 +72,7 @@ demographicBaseline <- function(executionSettings,
    dplyr::mutate(total = n()) %>%
    dplyr::ungroup()
 
-
-  ### Get covariate table for race and gender
+  # Get covariate table for race and gender
   covTblA <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId %in% c(1,4)) %>%
@@ -81,7 +80,7 @@ demographicBaseline <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId, analysisId) %>%
     dplyr::collect()
 
-  ### Get covariate table for age group
+  # Get covariate table for age group
   covTblB <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 3) %>%
@@ -92,7 +91,7 @@ demographicBaseline <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId, analysisId) %>%
     dplyr::collect()
 
-  ### Get covariate table for year
+  # Get covariate table for year
   covTblC <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 6) %>%
@@ -103,12 +102,12 @@ demographicBaseline <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId, analysisId) %>%
     dplyr::collect()
 
-  ### Bind all covariate tables
+  # Bind all covariate tables
   covTbl <- dplyr::bind_rows(
     covTblA, covTblB, covTblC
   )
 
-  ### Format output
+  # Format output
   demoTbl <- covTbl %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
     dplyr::group_by(analysisId, conceptId, strata_id, strata, total) %>%
@@ -163,7 +162,7 @@ demographicBaseline <- function(executionSettings,
     dplyr::mutate(database = executionSettings$databaseId,
                   cohort = targetCohorts$name)
 
-  ### Save output
+  # Save output
   save_path <- fs::path(outputFolder, "demographics_baseline.csv")
   readr::write_csv(demoTbl, file = save_path)
   cli::cat_line("\nDemographic Baseline run at: ", Sys.time())
@@ -191,7 +190,7 @@ demographicBaselineMap <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohortsId)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohortsName)
   fs::dir_create(outputFolder)
 
@@ -221,7 +220,7 @@ demographicBaselineMap <- function(executionSettings,
   cli::cat_line("\nDemographics Covariates built at: ", tok)
   cli::cat_line("\nCovariate build took: ", tok_format)
 
-  ### get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -242,8 +241,7 @@ demographicBaselineMap <- function(executionSettings,
     dplyr::mutate(total = n()) %>%
     dplyr::ungroup()
 
-
-  ### Get covariate table for race and gender
+  # Get covariate table for race and gender
   covTblA <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId %in% c(1,4)) %>%
@@ -251,7 +249,7 @@ demographicBaselineMap <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId, analysisId) %>%
     dplyr::collect()
 
-  ### Get covariate table for age group
+  # Get covariate table for age group
   covTblB <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 3) %>%
@@ -262,7 +260,7 @@ demographicBaselineMap <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId, analysisId) %>%
     dplyr::collect()
 
-  ### Get covariate table for year
+  # Get covariate table for year
   covTblC <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 6) %>%
@@ -273,12 +271,12 @@ demographicBaselineMap <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId, analysisId) %>%
     dplyr::collect()
 
-  ### Bind all covariate tables
+  # Bind all covariate tables
   covTbl <- dplyr::bind_rows(
     covTblA, covTblB, covTblC
   )
 
-  ### Format output
+  # Format output
   demoTbl <- covTbl %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
     dplyr::group_by(analysisId, conceptId, strata_id, strata, total) %>%
@@ -333,7 +331,7 @@ demographicBaselineMap <- function(executionSettings,
     dplyr::mutate(database = executionSettings$databaseId,
                   cohort = targetCohortsName)
 
-  ### Save output
+  # Save output
   save_path <- fs::path(outputFolder, "demographics_baseline.csv")
   readr::write_csv(demoTbl, file = save_path)
   cli::cat_line("\nDemographic Baseline run at: ", Sys.time())
@@ -364,11 +362,11 @@ continuousBaseline <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohorts$id)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohorts$name)
   fs::dir_create(outputFolder)
 
-  #preset feature extraction for continuous
+  # Create Continuous settings
   cov_settings <- FeatureExtraction::createCovariateSettings(
     useDemographicsAge = TRUE,
     useDemographicsPriorObservationTime = TRUE,
@@ -377,7 +375,6 @@ continuousBaseline <- function(executionSettings,
     useDcsi = TRUE
   )
 
-  #get covariate data
   tik <- Sys.time()
 
   quietCov <- purrr::quietly(FeatureExtraction::getDbCovariateData)
@@ -396,7 +393,7 @@ continuousBaseline <- function(executionSettings,
   cli::cat_line("\nContinuous Covariates built at: ", tok)
   cli::cat_line("\nCovariate build took: ", tok_format)
 
-  ### Get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -416,13 +413,13 @@ continuousBaseline <- function(executionSettings,
     dplyr::ungroup() %>%
     dplyr::collect()
 
-  ### Handle Continuous Age
+  # Get covariate table for Continuous
   covTbl <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId %in% c(2, 8, 9, 10, 902)) %>%
     dplyr::collect()
 
-  ### Format output
+  # Format output
   ctsTbl <- covTbl %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
     dplyr::group_by(analysisId, conceptId, strata_id, strata) %>%
@@ -453,7 +450,7 @@ continuousBaseline <- function(executionSettings,
     dplyr::mutate(database = executionSettings$databaseId,
                   cohort = targetCohorts$name)
 
-  ### Save output
+  # Save output
   save_path <- fs::path(outputFolder, "continuous_baseline.csv")
   readr::write_csv(ctsTbl, file = save_path)
   cli::cat_line("\nContinuous Baseline run at: ", Sys.time())
@@ -483,11 +480,11 @@ continuousBaselineMap <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohortsId)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohortsName)
   fs::dir_create(outputFolder)
 
-  #preset feature extraction for continuous
+  # Create Continuous settings
   cov_settings <- FeatureExtraction::createCovariateSettings(
     useDemographicsAge = TRUE,
     useDemographicsPriorObservationTime = TRUE,
@@ -496,7 +493,6 @@ continuousBaselineMap <- function(executionSettings,
     useDcsi = TRUE
   )
 
-  #get covariate data
   tik <- Sys.time()
 
   quietCov <- purrr::quietly(FeatureExtraction::getDbCovariateData)
@@ -515,7 +511,7 @@ continuousBaselineMap <- function(executionSettings,
   cli::cat_line("\nContinuous Covariates built at: ", tok)
   cli::cat_line("\nCovariate build took: ", tok_format)
 
-  ### Get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -535,13 +531,13 @@ continuousBaselineMap <- function(executionSettings,
     dplyr::ungroup() %>%
     dplyr::collect()
 
-  ### Handle Continuous Age
+  # Get covariate table for Continuous
   covTbl <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId %in% c(2, 8, 9, 10, 902)) %>%
     dplyr::collect()
 
-  ### Format output
+  # Format output
   ctsTbl <- covTbl %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
     dplyr::group_by(analysisId, conceptId, strata_id, strata) %>%
@@ -572,7 +568,7 @@ continuousBaselineMap <- function(executionSettings,
     dplyr::mutate(database = executionSettings$databaseId,
                   cohort = targetCohortsName)
 
-  ### Save output
+  # Save output
   save_path <- fs::path(outputFolder, "continuous_baseline.csv")
   readr::write_csv(ctsTbl, file = save_path)
   cli::cat_line("\nContinuous Baseline run at: ", Sys.time())
@@ -606,11 +602,11 @@ drugsCovariates <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohorts$id)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohorts$name)
   fs::dir_create(outputFolder)
 
-  #preset feature extraction for continuous
+  # Create Drug Era Group settings
   cov_settings <- FeatureExtraction::createCovariateSettings(
     useDrugGroupEraLongTerm = TRUE,
     excludedCovariateConceptIds = c(21600001, 21600959, 21601237, # Remove ATC 1st class
@@ -622,8 +618,8 @@ drugsCovariates <- function(executionSettings,
     endDays = timeB
   )
 
-  #get covariate data
   tik <- Sys.time()
+
   quietCov <- purrr::quietly(FeatureExtraction::getDbCovariateData)
   cov <- quietCov(
     connection = con,
@@ -640,8 +636,7 @@ drugsCovariates <- function(executionSettings,
   cli::cat_line("\nDrug Covariates built at: ", tok)
   cli::cat_line("\nCovariate build took: ", tok_format)
 
-
-  ### Get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -663,8 +658,7 @@ drugsCovariates <- function(executionSettings,
     dplyr::ungroup() %>%
     dplyr::collect()
 
-
-  ### Get covariate table for drugs
+  # Get covariate table for drugs
   covTbl <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 410) %>%
@@ -672,7 +666,7 @@ drugsCovariates <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId) %>%
     dplyr::collect()
 
-  ### Get unique concept ids
+  # Get unique concept ids
   conceptIds <- cov$covariateRef %>%
     dplyr::filter(analysisId == 410) %>%
     dplyr::select(conceptId) %>%
@@ -680,8 +674,7 @@ drugsCovariates <- function(executionSettings,
     dplyr::collect() %>%
     dplyr::pull()
 
-  ### Find atc rollup
-
+  # Find atc rollup
   drugSql <-
     "with drug as ( -- define disease categories similar to ICD10 Chapters
       select row_number() over (order by concept_code) as precedence, concept_name as category_name, concept_id as category_id
@@ -716,7 +709,7 @@ drugsCovariates <- function(executionSettings,
     dplyr::rename(conceptId = drugId, conceptName = drugName)
 
 
-  ### Format output
+  # Format output
   drugTbl <- covTbl %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
     dplyr::group_by(conceptId, strata_id, strata, total) %>%
@@ -731,7 +724,7 @@ drugsCovariates <- function(executionSettings,
     dplyr::mutate(database = executionSettings$databaseId,
                   cohort = targetCohorts$name)
 
-  ### Save output
+  # Save output
   fname <- paste("drugs", abs(timeA), abs(timeB), sep = "_")
   save_path <- fs::path(outputFolder, fname , ext = "csv")
   readr::write_csv(drugTbl, file = save_path)
@@ -763,11 +756,11 @@ drugsCovariatesMap <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohortsId)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohortsName)
   fs::dir_create(outputFolder)
 
-  #preset feature extraction for continuous
+  # Create Drug Era Group settings
   cov_settings <- FeatureExtraction::createCovariateSettings(
     useDrugGroupEraLongTerm = TRUE,
     excludedCovariateConceptIds = c(21600001, 21600959, 21601237, # Remove ATC 1st class
@@ -775,13 +768,13 @@ drugsCovariatesMap <- function(executionSettings,
                                     21602795, 21601386, 21603931,
                                     21604180, 21604847, 21605007,
                                     21603550, 21605212),
-    addDescendantsToInclude = TRUE, # Default is FALSE
+    addDescendantsToInclude = FALSE, # Default is FALSE
     longTermStartDays = timeA,
     endDays = timeB
   )
 
-  #get covariate data
   tik <- Sys.time()
+
   quietCov <- purrr::quietly(FeatureExtraction::getDbCovariateData)
   cov <- quietCov(
     connection = con,
@@ -799,7 +792,7 @@ drugsCovariatesMap <- function(executionSettings,
   cli::cat_line("\nCovariate build took: ", tok_format)
 
 
-  ### Get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -821,8 +814,7 @@ drugsCovariatesMap <- function(executionSettings,
     dplyr::ungroup() %>%
     dplyr::collect()
 
-
-  ### Get covariate table for drugs
+  # Get covariate table for drugs
   covTbl <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 410) %>%
@@ -830,7 +822,7 @@ drugsCovariatesMap <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId) %>%
     dplyr::collect()
 
-  ### Get unique concept ids
+  # Get unique concept ids
   conceptIds <- cov$covariateRef %>%
     dplyr::filter(analysisId == 410) %>%
     dplyr::select(conceptId) %>%
@@ -838,8 +830,7 @@ drugsCovariatesMap <- function(executionSettings,
     dplyr::collect() %>%
     dplyr::pull()
 
-  ### Find atc rollup
-
+  # Find atc rollup
   drugSql <-
     "with drug as ( -- define disease categories similar to ICD10 Chapters
       select row_number() over (order by concept_code) as precedence, concept_name as category_name, concept_id as category_id
@@ -874,7 +865,7 @@ drugsCovariatesMap <- function(executionSettings,
     dplyr::rename(conceptId = drugId, conceptName = drugName)
 
 
-  ### Format output
+  # Format output
   drugTbl <- covTbl %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
     dplyr::group_by(conceptId, strata_id, strata, total) %>%
@@ -889,7 +880,22 @@ drugsCovariatesMap <- function(executionSettings,
     dplyr::mutate(database = executionSettings$databaseId,
                   cohort = targetCohortsName)
 
-  ### Save output
+  # drugTbl <- covTbl %>%
+  #   dplyr::left_join(atc_grp, by = c("conceptId")) %>%
+  #   dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
+  #   dplyr::group_by(categoryName, strata_id, strata, total) %>%
+  #   dplyr::summarize(nn = sum(covariateValue, na.rm = TRUE)) %>%
+  #   dplyr::ungroup() %>%
+  #   dplyr::mutate(
+  #     window = paste0("T (", timeA, "d to ", timeB, "d)"),
+  #     pct = nn / total) %>%
+  #   #dplyr::select(categoryId, categoryName, conceptId, conceptName, strata_id, strata, nn, total, pct, window) %>%
+  #   dplyr::select(categoryName, conceptId, conceptName, strata_id, strata, nn, total, pct, window) %>%
+  #   #dplyr::arrange(categoryId) %>%
+  #   dplyr::mutate(database = executionSettings$databaseId,
+  #                 cohort = targetCohortsName)
+
+  # Save output
   fname <- paste("drugs", abs(timeA), abs(timeB), sep = "_")
   save_path <- fs::path(outputFolder, fname , ext = "csv")
   readr::write_csv(drugTbl, file = save_path)
@@ -899,8 +905,6 @@ drugsCovariatesMap <- function(executionSettings,
   return(drugTbl)
 
 }
-
-
 
 
 ## Cohort Covariates ---------------
@@ -938,7 +942,7 @@ cohortCovariates <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohorts$id)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohorts$name)
   fs::dir_create(outputFolder)
 
@@ -1038,7 +1042,7 @@ cohortCovariates <- function(executionSettings,
   cli::cat_line("\nCovariate build took: ", tok_format)
 
 
-  ### Format output
+  # Format output
   formatted_tbl <- covTbl %>%
     dplyr::left_join(covariateKey, by = c("cohort_covariate_id" = "id")) %>%
     dplyr::mutate(
@@ -1053,7 +1057,7 @@ cohortCovariates <- function(executionSettings,
                   cohort = targetCohorts$name)
 
 
-  ### Save output for all cohort covariates
+  # Save output for all cohort covariates
   fname <- paste("cohort_covariates", abs(timeA), abs(timeB), sep = "_")
   save_path <- fs::path(outputFolder, fname , ext = "csv")
   readr::write_csv(formatted_tbl, file = save_path)
@@ -1099,7 +1103,7 @@ cohortCovariatesMap <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohortsId)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohortsName)
   fs::dir_create(outputFolder)
 
@@ -1199,7 +1203,7 @@ cohortCovariatesMap <- function(executionSettings,
   cli::cat_line("\nCovariate build took: ", tok_format)
 
 
-  ### Format output
+  # Format output
   formatted_tbl <- covTbl %>%
     dplyr::left_join(covariateKey, by = c("cohort_covariate_id" = "id")) %>%
     dplyr::mutate(
@@ -1214,7 +1218,7 @@ cohortCovariatesMap <- function(executionSettings,
                   cohort = targetCohortsName)
 
 
-  ### Save output for all cohort covariates
+  # Save output for all cohort covariates
   fname <- paste("cohort_covariates", abs(timeA), abs(timeB), sep = "_")
   save_path <- fs::path(outputFolder, fname , ext = "csv")
   readr::write_csv(formatted_tbl, file = save_path)
@@ -1248,19 +1252,19 @@ conditionCovariates <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohorts$id)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohorts$name)
   fs::dir_create(outputFolder)
 
-  #preset feature extraction for conditions
+  # Create Conditions Era Group settings
   cov_settings <- FeatureExtraction::createCovariateSettings(
     useConditionGroupEraLongTerm = TRUE,
     longTermStartDays = timeA,
     endDays = timeB
   )
 
-  #get covariate data
   tik <- Sys.time()
+
   quietCov <- purrr::quietly(FeatureExtraction::getDbCovariateData)
   cov <- quietCov(
     connection = con,
@@ -1278,7 +1282,7 @@ conditionCovariates <- function(executionSettings,
   cli::cat_line("\nCovariate build took: ", tok_format)
 
 
-  ### Get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -1293,7 +1297,7 @@ conditionCovariates <- function(executionSettings,
   colnames(strataTbl) <- tolower(colnames(strataTbl))
 
 
-  ## Get strata cohorts
+  # Get strata cohorts
   strataTbl <- strataTbl %>%
     dplyr::mutate(subject_id = as.double(subject_id)) %>%
     dplyr::filter(cohort_definition_id == targetCohortId) %>%
@@ -1301,7 +1305,7 @@ conditionCovariates <- function(executionSettings,
     dplyr::mutate(total = n()) %>%
     dplyr::ungroup()
 
-  ### Get covariate table for drugs
+  # Get covariate table for conditions
   covTbl <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 210) %>%
@@ -1309,7 +1313,7 @@ conditionCovariates <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId) %>%
     dplyr::collect()
 
-  ### Get unique concept ids
+  # Get unique concept ids
   conceptIds <- cov$covariateRef %>%
     dplyr::filter(analysisId == 210) %>%
     dplyr::select(conceptId) %>%
@@ -1318,7 +1322,7 @@ conditionCovariates <- function(executionSettings,
     dplyr::pull()
 
 
-  ## Condition Rollup
+  # Condition Rollup
   conditionSql <-
     "with disease as ( -- define disease categories similar to ICD10 Chapters
     select 1 as precedence, 'Blood disease' as category_name, 440371 as category_id union
@@ -1374,7 +1378,6 @@ conditionCovariates <- function(executionSettings,
 
   ## Split concept set into two vectors to avoid Snowflake error:
   ## maximum number of expressions in a list exceeded, expected at most 16,384, got 17,979
-
   chunk_length <- length(conceptIds)/2
 
   conceptIdList <- split(conceptIds,
@@ -1384,7 +1387,7 @@ conditionCovariates <- function(executionSettings,
   conceptIdsNo2 <- unlist(conceptIdList[2])
 
 
-  ## Get condition Rollup
+  # Get condition Rollup
   icd_chpNo1 <- DatabaseConnector::renderTranslateQuerySql(
     connection = con,
     sql = conditionSql,
@@ -1432,9 +1435,8 @@ conditionCovariates <- function(executionSettings,
     dplyr::select(categoryId, categoryCode, categoryName, conceptId, conceptName) %>%
     dplyr::arrange(categoryId, conceptId)
 
-  gc()
 
-  ### Format output for conditions
+  # Format output for conditions
   covStrata <- covTbl %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
     dplyr::group_by(conceptId, strata_id, strata, total) %>%
@@ -1450,7 +1452,7 @@ conditionCovariates <- function(executionSettings,
     dplyr::mutate(database = executionSettings$databaseId,
                   cohort = targetCohorts$name)
 
-  ### Save output for all conditions
+  # Save output for all conditions
   fname <- paste("conditions", abs(timeA), abs(timeB), sep = "_")
   save_path <- fs::path(outputFolder, fname , ext = "csv")
   readr::write_csv(condTbl, file = save_path)
@@ -1459,7 +1461,7 @@ conditionCovariates <- function(executionSettings,
   cli::cat_line("\nSaved to: ", save_path)
 
 
-  ### Format output for icd chapters
+  # Format output for icd chapters
   condTbl2 <- covTbl %>%
      dplyr::left_join(icd_chp, by = c("conceptId")) %>%
      dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all")
@@ -1479,7 +1481,7 @@ conditionCovariates <- function(executionSettings,
                   cohort = targetCohorts$name)
 
 
-  ### Save output for all conditions
+  # Save output for all conditions
   fname <- paste("condition_chapters", abs(timeA), abs(timeB), sep = "_")
   save_path <- fs::path(outputFolder, fname , ext = "csv")
   readr::write_csv(condTblCh, file = save_path)
@@ -1512,19 +1514,19 @@ conditionCovariatesMap <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohortsId)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohortsName)
   fs::dir_create(outputFolder)
 
-  #preset feature extraction for conditions
+  # Create Conditions Era Group settings
   cov_settings <- FeatureExtraction::createCovariateSettings(
     useConditionGroupEraLongTerm = TRUE,
     longTermStartDays = timeA,
     endDays = timeB
   )
 
-  #get covariate data
   tik <- Sys.time()
+
   quietCov <- purrr::quietly(FeatureExtraction::getDbCovariateData)
   cov <- quietCov(
     connection = con,
@@ -1542,7 +1544,7 @@ conditionCovariatesMap <- function(executionSettings,
   cli::cat_line("\nCovariate build took: ", tok_format)
 
 
-  ### Get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -1557,7 +1559,7 @@ conditionCovariatesMap <- function(executionSettings,
   colnames(strataTbl) <- tolower(colnames(strataTbl))
 
 
-  ## Get strata cohorts
+  # Get strata cohorts
   strataTbl <- strataTbl %>%
     dplyr::mutate(subject_id = as.double(subject_id)) %>%
     dplyr::filter(cohort_definition_id == targetCohortId) %>%
@@ -1565,7 +1567,7 @@ conditionCovariatesMap <- function(executionSettings,
     dplyr::mutate(total = n()) %>%
     dplyr::ungroup()
 
-  ### Get covariate table for drugs
+  # Get covariate table for conditions
   covTbl <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 210) %>%
@@ -1573,7 +1575,7 @@ conditionCovariatesMap <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId) %>%
     dplyr::collect()
 
-  ### Get unique concept ids
+  # Get unique concept ids
   conceptIds <- cov$covariateRef %>%
     dplyr::filter(analysisId == 210) %>%
     dplyr::select(conceptId) %>%
@@ -1582,7 +1584,7 @@ conditionCovariatesMap <- function(executionSettings,
     dplyr::pull()
 
 
-  ## Condition Rollup
+  # Condition Rollup
   conditionSql <-
     "with disease as ( -- define disease categories similar to ICD10 Chapters
     select 1 as precedence, 'Blood disease' as category_name, 440371 as category_id union
@@ -1632,13 +1634,9 @@ conditionCovariatesMap <- function(executionSettings,
   where concept_id in (@conceptIds) -- place here the concept_ids you want to roll up (have to be standard SNOMED)
   ;"
 
-  # cli::cat_line("\nRolling up condition concepts to ICD10 Chapters class using: ")
-  # cli::cat_line("\n", conditionSql, "\n")
-
 
   ## Split concept set into two vectors to avoid Snowflake error:
   ## maximum number of expressions in a list exceeded, expected at most 16,384, got 17,979
-
   chunk_length <- length(conceptIds)/2
 
   conceptIdList <- split(conceptIds,
@@ -1697,7 +1695,7 @@ conditionCovariatesMap <- function(executionSettings,
     dplyr::arrange(categoryId, conceptId)
 
 
-  ### Format output for conditions
+  # Format output for conditions
   covStrata <- covTbl %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all") %>%
     dplyr::group_by(conceptId, strata_id, strata, total) %>%
@@ -1713,7 +1711,7 @@ conditionCovariatesMap <- function(executionSettings,
     dplyr::mutate(database = executionSettings$databaseId,
                   cohort = targetCohortsName)
 
-  ### Save output for all conditions
+  # Save output for all conditions
   fname <- paste("conditions", abs(timeA), abs(timeB), sep = "_")
   save_path <- fs::path(outputFolder, fname , ext = "csv")
   readr::write_csv(condTbl, file = save_path)
@@ -1749,19 +1747,19 @@ conditionCovariatesGroupMap <- function(executionSettings,
   strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
   targetCohortId <- as.double(targetCohortsId)
 
-  #create directory if it doesnt exist
+  # Create directory if it doesn't exist
   outputFolder <- fs::path(outputFolder, targetCohortsName)
   fs::dir_create(outputFolder)
 
-  #preset feature extraction for conditions
+  # Create Conditions Era Group settings
   cov_settings <- FeatureExtraction::createCovariateSettings(
     useConditionGroupEraLongTerm = TRUE,
     longTermStartDays = timeA,
     endDays = timeB
   )
 
-  #get covariate data
   tik <- Sys.time()
+
   quietCov <- purrr::quietly(FeatureExtraction::getDbCovariateData)
   cov <- quietCov(
     connection = con,
@@ -1779,7 +1777,7 @@ conditionCovariatesGroupMap <- function(executionSettings,
   cli::cat_line("\nCovariate build took: ", tok_format)
 
 
-  ### Get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -1793,8 +1791,6 @@ conditionCovariatesGroupMap <- function(executionSettings,
 
   colnames(strataTbl) <- tolower(colnames(strataTbl))
 
-
-  ## Get strata cohorts
   strataTbl <- strataTbl %>%
     dplyr::mutate(subject_id = as.double(subject_id)) %>%
     dplyr::filter(cohort_definition_id == targetCohortId) %>%
@@ -1802,7 +1798,7 @@ conditionCovariatesGroupMap <- function(executionSettings,
     dplyr::mutate(total = n()) %>%
     dplyr::ungroup()
 
-  ### Get covariate table for drugs
+  # Get covariate table for conditions
   covTbl <- cov$covariates %>%
     dplyr::left_join(cov$covariateRef, by = c("covariateId")) %>%
     dplyr::filter(analysisId == 210) %>%
@@ -1810,7 +1806,7 @@ conditionCovariatesGroupMap <- function(executionSettings,
     dplyr::select(rowId, covariateValue, conceptId) %>%
     dplyr::collect()
 
-  ### Get unique concept ids
+  # Get unique concept ids
   conceptIds <- cov$covariateRef %>%
     dplyr::filter(analysisId == 210) %>%
     dplyr::select(conceptId) %>%
@@ -1819,7 +1815,7 @@ conditionCovariatesGroupMap <- function(executionSettings,
     dplyr::pull()
 
 
-  ## Condition Rollup
+  # Condition Rollup
   conditionSql <-
     "with disease as ( -- define disease categories similar to ICD10 Chapters
     select 1 as precedence, 'Blood disease' as category_name, 440371 as category_id union
@@ -1869,13 +1865,9 @@ conditionCovariatesGroupMap <- function(executionSettings,
   where concept_id in (@conceptIds) -- place here the concept_ids you want to roll up (have to be standard SNOMED)
   ;"
 
-  # cli::cat_line("\nRolling up condition concepts to ICD10 Chapters class using: ")
-  # cli::cat_line("\n", conditionSql, "\n")
-
 
   ## Split concept set into two vectors to avoid Snowflake error:
   ## maximum number of expressions in a list exceeded, expected at most 16,384, got 17,979
-
   chunk_length <- length(conceptIds)/2
 
   conceptIdList <- split(conceptIds,
@@ -1885,7 +1877,7 @@ conditionCovariatesGroupMap <- function(executionSettings,
   conceptIdsNo2 <- unlist(conceptIdList[2])
 
 
-  ## Get condition Rollup
+  # Get condition Rollup
   icd_chpNo1 <- DatabaseConnector::renderTranslateQuerySql(
     connection = con,
     sql = conditionSql,
@@ -1934,13 +1926,27 @@ conditionCovariatesGroupMap <- function(executionSettings,
     dplyr::arrange(categoryId, conceptId)
 
 
-  ### Format output for icd chapters
+  # Format output for icd chapters
   condTbl2 <- covTbl %>%
     dplyr::left_join(icd_chp, by = c("conceptId")) %>%
     dplyr::left_join(strataTbl, by = c("rowId" = "subject_id"), multiple = "all")
 
+  # condTblCh <- condTbl2 %>%
+  #   dplyr::distinct(rowId, categoryId, categoryCode, categoryName, strata_id, strata, total) %>%
+  #   dplyr::group_by(categoryId, categoryCode, categoryName, strata_id, strata, total) %>%
+  #   dplyr::count(name = "nn") %>%
+  #   dplyr::ungroup() %>%
+  #   dplyr::mutate(
+  #     window = paste(timeA, timeB, sep = " : "),
+  #     nn = as.double(nn),
+  #     pct = nn / total) %>%
+  #   dplyr::select(categoryId, categoryCode, categoryName, strata_id, strata, nn, total, pct, window) %>%
+  #   dplyr::arrange(categoryId) %>%
+  #   dplyr::mutate(database = executionSettings$databaseId,
+  #                 cohort = targetCohortsName)
+
   condTbl_ID <- condTbl2 %>%
-    dplyr::distinct(rowId, categoryId, categoryCode, categoryName, strata_id, strata, total) %>%
+    dplyr::distinct(rowId, categoryId, categoryName, strata_id, strata, total) %>%
     dplyr::group_by(categoryId, categoryName, strata_id, strata, total) %>%
     dplyr::count(name = "nn") %>%
     dplyr::ungroup() %>%
@@ -1954,7 +1960,7 @@ conditionCovariatesGroupMap <- function(executionSettings,
                   cohort = targetCohortsName)
 
 
-  ### Save output for all conditions
+  # Save output for all conditions
   fname <- paste("condition_chapters", abs(timeA), abs(timeB), sep = "_")
   save_path <- fs::path(outputFolder, fname , ext = "csv")
   readr::write_csv(condTbl_ID, file = save_path)

@@ -16,7 +16,7 @@ cohortsToCreate <- readr::read_csv(here::here("output", "01_buildCohorts", confi
                                    show_col_types = FALSE)
 
 targetInputs <- cohortsToCreate %>%
-  dplyr::filter(type == "studyPop" & name != "c5") %>% # Excluding cohort c5 per protocol
+  dplyr::filter(type == "studyPop" & name != "c5") %>%
   dplyr::select(id, name) %>%
   dplyr::rename(targetId = id, targetName = name)
 
@@ -35,7 +35,8 @@ subgroupInputs <- cohortsToCreate %>%
 executionSettings <- getExecutionSettings(configBlock)
 
 
-## IR manifest ---------------
+### 1. IR manifest ---------------
+
 windowInputs <- c("0-183", "184-365", "366-730", "731-1825")
 
 irManifest <- tidyr::expand_grid(targetInputs, outcomeInputs ,subgroupInputs, windowInputs) %>%
@@ -56,7 +57,8 @@ irManifest <- tidyr::expand_grid(targetInputs, outcomeInputs ,subgroupInputs, wi
   )
 
 
-## IR Analysis ---------------
+### 2. IR Analysis ---------------
+
 ageBreaks <- c(18, 40, 50, 60)
 
 irAnalysis <- irManifest %>%
@@ -66,7 +68,8 @@ irAnalysis <- irManifest %>%
   })
 
 
-## Generate Incidence Analysis ---------------
+### 3. Generate Incidence Analysis ---------------
+
 ir_results <- purrr::map2_dfr(irAnalysis, 1:length(irAnalysis),
                               ~generateIncidence(
                                 executionSettings = executionSettings,
@@ -76,6 +79,6 @@ ir_results <- purrr::map2_dfr(irAnalysis, 1:length(irAnalysis),
 View(ir_results)
 
 
-## Save results - Parquet ---------------
+## Save results (Parquet)
 save_path <- fs::path(outputFolder, "ir")
 arrow::write_parquet(ir_results, sink = save_path)

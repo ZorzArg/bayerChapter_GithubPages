@@ -79,18 +79,17 @@ treatmentPatterns <- function(executionSettings,
                               minNumPatterns = 30L,
                               outputFolder) {
 
-  ## Read treatment history data frame
+  # Read treatment history data frame
   treatmentHistory <- arrow::read_parquet(file = here::here("output", "06_treatmentHistory",
                                                             executionSettings$databaseId, targetCohorts$name,
                                                             paste0("th_", eventType, "_", eraCollapseSize, ".parquet")))
 
-
-  ## Create directory
+  # Create directory
   outputFolder <- fs::path(outputFolder, targetCohorts$name)
   fs::dir_create(outputFolder)
 
 
-  ## Set variables
+  # Set variables
   if (executionSettings$connectionDetails$dbms == "snowflake") {
     writeSchema <- paste(executionSettings$writeDatabase, executionSettings$writeSchema, sep = ".")
     cdmSchema <- paste(executionSettings$cdmDatabase, executionSettings$cdmSchema, sep = ".")
@@ -104,7 +103,7 @@ treatmentPatterns <- function(executionSettings,
   targetCohortId <- as.double(targetCohorts$id)
 
 
-  ## Get strata table
+  # Get strata table
   sql <- "SELECT * FROM @write_schema.@strata_table
           WHERE cohort_definition_id = @target_cohort_id;"  %>%
     SqlRender::render(
@@ -119,7 +118,7 @@ treatmentPatterns <- function(executionSettings,
   colnames(strataTbl) <- tolower(colnames(strataTbl))
 
 
-  ## Create treatment patterns
+  # Create treatment patterns
   treatmentHistoryStratas <- treatmentHistory %>%
       dplyr::left_join(strataTbl, by = c("person_id" = "subject_id"), multiple = "all") %>%
       dplyr::group_by(strata_id, strata)
@@ -139,26 +138,22 @@ treatmentPatterns <- function(executionSettings,
     dplyr::group_split() %>%
     purrr::set_names(nm = strataNames)
 
-  ## FOR DEBUGGING
-  # prepTPtables(patternsTable$total_total, minNumPatterns = minNumPatterns)
-  # prepSankey(patternsTable$total_total, minNumPatterns = minNumPatterns)
 
-
- ## Tables
- patternsTable <- treatmentHistoryStratas %>%
+  # Tables
+  patternsTable <- treatmentHistoryStratas %>%
     dplyr::group_split() %>%
     purrr::map(~prepTPtables(.x, minNumPatterns = minNumPatterns)) %>%
     purrr::set_names(nm = strataNames) %>%
     data.table::rbindlist(fill = TRUE)
 
- ## Sankey plots
- patternsSankey <- treatmentHistoryStratas %>%
+  # Sankey plots
+  patternsSankey <- treatmentHistoryStratas %>%
    dplyr::group_split() %>%
    purrr::map(~prepSankey(.x, minNumPatterns = minNumPatterns)) %>%
    purrr::set_names(nm = strataNames)
 
 
-  ## Save output - rds & csv
+  # Save output - rds & csv
   save_path <- fs::path(outputFolder, paste0("treatmentPatterns_", eventType, "_", eraCollapseSize, ".rds"))
   readr::write_rds(patternsSankey, file = save_path)
 
