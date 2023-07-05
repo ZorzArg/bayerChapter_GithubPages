@@ -1972,3 +1972,238 @@ conditionCovariatesGroupMap <- function(executionSettings,
 }
 
 
+
+## Post-Index  ---------------
+
+postIndexCovariatesMap <- function(executionSettings,
+                                    con,
+                                    targetCohortsName,
+                                    targetCohortsId,
+                                    covariateKey,
+                                    timeA,
+                                    timeB,
+                                    outputFolder,
+                                    printSql = FALSE) {
+
+  cli::cat_rule()
+  cli::cat_line("Generating Post-Index Cohort Covariates")
+  id_print <- paste(covariateKey$id, collapse = ",")
+  t_print <- paste0(timeA, " to " , timeB)
+  cli::cat_line("\tCohort name: ", targetCohortsName)
+  cli::cat_line("\tUsing covariate ids: ", id_print)
+  cli::cat_line("\tAt window ", t_print)
+
+
+  if (executionSettings$connectionDetails$dbms == "snowflake") {
+
+    writeSchema <- paste(executionSettings$writeDatabase, executionSettings$writeSchema, sep = ".")
+    cdmSchema <- paste(executionSettings$cdmDatabase, executionSettings$cdmSchema, sep = ".")
+
+  } else {
+
+    writeSchema <- executionSettings$writeSchema
+    cdmSchema <- executionSettings$cdmSchema
+
+  }
+
+  cohortTable <- paste(executionSettings$cohortTable, executionSettings$databaseId, sep = "_")
+  strataTable <- paste(executionSettings$cohortTable, "strata", configBlock, sep = "_")
+  targetCohortId <- as.double(targetCohortsId)
+
+  # Create directory if it doesn't exist
+  outputFolder <- fs::path(outputFolder, targetCohortsName)
+  fs::dir_create(outputFolder)
+
+
+  denominatorSql <- "
+  create or replace temporary table @writeSchema.temp_deno (total number, strata_id number, strata number);
+
+  INSERT INTO @writeSchema.temp_deno
+  WITH T1 AS (
+      SELECT *
+      FROM @writeSchema.@cohortTable
+      WHERE cohort_definition_id = @cohortId
+    ),
+    T2 AS (
+      SELECT
+        T1.*,
+        cohort_end_date - cohort_start_date as dur,
+        rhs.strata_id,
+        rhs.strata
+      FROM T1
+      INNER JOIN (
+          SELECT *
+          FROM @writeSchema.@strataTable
+          WHERE cohort_definition_id = @cohortId
+      ) rhs
+      ON (T1.subject_id = rhs.subject_id AND T1.cohort_definition_id = rhs.cohort_definition_id)
+    ),
+    T3 AS (
+      SELECT
+       *,
+       (case when dur >= @timeA then 1 else 0 end) as time
+      FROM T2
+     ),
+     T4 AS (
+        SELECT
+         count(*) as total,
+         strata_id,
+         strata
+        FROM T3
+        where time = 1
+        group by strata_id, strata
+      )
+      SELECT *
+      FROM T4;"
+
+  if (printSql) {
+    cli::cat_line("With sql:\n", cohortSql, "\n")
+  }
+
+  tik <- Sys.time()
+
+  # denominator <-
+    SqlRender::render(
+    denominatorSql,
+    writeSchema = writeSchema,
+    cohortTable = cohortTable,
+    strataTable = strataTable,
+    cohortId = targetCohortId,
+    timeA = timeA) %>%
+    SqlRender::translate(targetDialect = executionSettings$connectionDetails$dbms) %>%
+    DatabaseConnector::executeSql(connection = con, sql = .)
+  # %>%
+  #   tibble::as_tibble() %>%
+  #   dplyr::rename_with(~tolower(.x))
+
+
+  numeratorSql <- "
+   create or replace temporary table @writeSchema.temp_num (cohort_covariate_id number, strata_id number, strata number, nn number);
+
+    insert into @writeSchema.temp_num
+    WITH T1 AS (
+    SELECT *
+    FROM @writeSchema.@cohortTable
+    WHERE cohort_definition_id = @cohortId
+  ),
+  T2 AS (
+    SELECT
+      T1.*,
+      rhs.strata_id,
+      rhs.strata
+    FROM T1
+    INNER JOIN (
+        SELECT *
+        FROM @writeSchema.@strataTable
+        WHERE cohort_definition_id = @cohortId
+    ) rhs
+    ON (T1.subject_id = rhs.subject_id AND T1.cohort_definition_id = rhs.cohort_definition_id)
+  ),
+  T3 AS (
+    --)
+    SELECT
+      T2.*,
+      rhs.cohort_definition_id AS cohort_covariate_id,
+      rhs.cohort_end_date AS covariate_end_date,
+      rhs.cohort_start_date AS covariate_start_date
+    FROM T2
+    INNER JOIN (
+      SELECT *
+      FROM @writeSchema.@cohortTable a
+      WHERE a.cohort_definition_id IN (@covariateIds)
+    ) rhs
+    ON (T2.subject_id = rhs.subject_id)
+  ),
+  T4 AS (
+    SELECT
+      *,
+      DATEADD(day, @timeA, cohort_start_date) AS a,
+      DATEADD(day, @timeB, cohort_start_date) AS b
+    FROM T3
+ ),
+  T5 AS (
+    SELECT
+      *,
+      (CASE WHEN covariate_start_date BETWEEN a AND b and covariate_start_date <= cohort_end_date THEN 1 ELSE 0 END) AS hit
+    FROM T4
+    )
+   SELECT
+    cohort_covariate_id,
+    strata_id,
+    strata,
+    SUM(hit) AS nn
+  FROM T5
+  GROUP BY
+    cohort_covariate_id,
+    strata_id,
+    strata;"
+
+  # numerator <-
+    SqlRender::render(
+    numeratorSql,
+    writeSchema = writeSchema,
+    cohortTable = cohortTable,
+    strataTable = strataTable,
+    cohortId = targetCohortId,
+    covariateIds = covariateKey$id,
+    timeA = timeA,
+    timeB = timeB) %>%
+    SqlRender::translate(targetDialect = executionSettings$connectionDetails$dbms) %>%
+    DatabaseConnector::executeSql(connection = con, sql = .)
+  # %>%
+  #   tibble::as_tibble() %>%
+  #   dplyr::rename_with(~tolower(.x))
+
+  ratioSql <- "
+     select
+     d.total,
+     n.nn,
+     n.nn/d.total as pct,
+     n.cohort_covariate_id,
+     d.strata_id,
+     d.strata
+    from @writeSchema.temp_num  n
+    left join @writeSchema.temp_deno d on d.strata_id = n.strata_id and d.strata = n.strata;"
+
+  ratio <- SqlRender::render(
+    ratioSql,
+    writeSchema = writeSchema) %>%
+    SqlRender::translate(targetDialect = executionSettings$connectionDetails$dbms) %>%
+    DatabaseConnector::querySql(connection = con, sql = .) %>%
+    tibble::as_tibble() %>%
+    dplyr::rename_with(~tolower(.x))
+
+
+  tok <- Sys.time()
+  tdif <- tok - tik
+  tok_format <- paste(scales::label_number(0.01)(as.numeric(tdif)), attr(tdif, "units"))
+  cli::cat_line("\nCohort Covariates built at: ", tok)
+  cli::cat_line("\nCovariate build took: ", tok_format)
+
+
+  # Format output
+  formatted_tbl <- ratio %>%
+    dplyr::left_join(covariateKey, by = c("cohort_covariate_id" = "id")) %>%
+    dplyr::mutate(
+      cohortCovariateId = as.double(cohort_covariate_id),
+      cohortCovariateName = name,
+      strataId = as.double(strata_id),
+      strata = as.double(strata),
+      window = paste0("T (", timeA, "d to ", timeB, "d)"),
+    ) %>%
+    dplyr::select(cohortCovariateId, cohortCovariateName, strataId, strata, window, nn, total, pct) %>%
+    dplyr::mutate(database = executionSettings$databaseId,
+                  cohort = targetCohortsName)
+
+
+  # Save output for all cohort covariates
+  fname <- paste("cohort_covariates", abs(timeA), abs(timeB), sep = "_")
+  save_path <- fs::path(outputFolder, fname , ext = "csv")
+  readr::write_csv(formatted_tbl, file = save_path)
+  cli::cat_line("\nCohort Covariates at window ", paste0(timeA, " to ", timeB),  " run at: ", Sys.time())
+  cli::cat_line("\nSaved to: ", save_path)
+
+  return(formatted_tbl)
+
+}
+

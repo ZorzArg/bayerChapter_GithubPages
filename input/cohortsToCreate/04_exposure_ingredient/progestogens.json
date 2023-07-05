@@ -1,8 +1,8 @@
 {
   "ConceptSets": [
     {
-      "id": 12,
-      "name": "[WHC] Progestogens",
+      "id": 13,
+      "name": "[WHC] Progestogens (updated)",
       "expression": {
         "items": [
           {
@@ -34,6 +34,21 @@
               "VOCABULARY_ID": "ATC"
             },
             "includeDescendants": true
+          },
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "ATC 4th",
+              "CONCEPT_CODE": "G03DA",
+              "CONCEPT_ID": 21602538,
+              "CONCEPT_NAME": "Pregnen (4) derivatives",
+              "DOMAIN_ID": "Drug",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "C",
+              "STANDARD_CONCEPT_CAPTION": "Classification",
+              "VOCABULARY_ID": "ATC"
+            },
+            "includeDescendants": true
           }
         ]
       }
@@ -43,7 +58,7 @@
     "CriteriaList": [
       {
         "DrugExposure": {
-          "CodesetId": 12
+          "CodesetId": 13
         }
       }
     ],

@@ -1,3 +1,9 @@
+# bayerChapter 0.1.2
+
+- Removed Device concept from `Depression` and `Mood disorder` concept sets
+- Added missing concepts in `Progestogens` and `progestogensEstrogens` concept sets
+- Added `postIndexCovariatesMap` function
+
 # bayerChapter 0.1.1
 
 - Updated `Anxiety` and `Mood disorder` concept sets

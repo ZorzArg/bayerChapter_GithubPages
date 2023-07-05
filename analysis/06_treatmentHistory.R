@@ -8,7 +8,7 @@ library(data.table)
 
 
 ## Set variables ----------------------
-configBlock <- "optum"
+configBlock <- "cprd_gold"
 outputFolder <- here::here("output", "06_treatmentHistory", configBlock)
 
 

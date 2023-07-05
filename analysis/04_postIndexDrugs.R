@@ -7,7 +7,7 @@ library(tidyverse, quietly = TRUE)
 
 
 ## Set variables ---------------
-configBlock <- "mrktscan"
+configBlock <- "optum"
 
 outputFolder <- here::here("output", "04_postIndexDrugs", configBlock)
 outputPath <- fs::path(outputFolder)
@@ -37,17 +37,18 @@ startSnowflakeSession(con, executionSettings)
 covariateKey <- cohortsToCreate %>%
   dplyr::filter(type %in% c("class3","class1"))
 
+#debug(postIndexCovariatesMap)
 postIndexDrugs <- purrr::pmap_dfr(
   scriptSettings,
-  ~cohortCovariatesMap(executionSettings = executionSettings,
-                    con = con,
-                    targetCohortsName = ..2,
-                    targetCohortsId = ..1,
-                    covariateKey = covariateKey,
-                    timeA = ..3,
-                    timeB = ..4,
-                    outputFolder = outputFolder,
-                    printSql = FALSE))
+  ~postIndexCovariatesMap(executionSettings = executionSettings,
+                          con = con,
+                          targetCohortsName = ..2,
+                          targetCohortsId = ..1,
+                          covariateKey = covariateKey,
+                          timeA = ..3,
+                          timeB = ..4,
+                          outputFolder = outputFolder,
+                          printSql = FALSE))
 
 View(postIndexDrugs)
 
