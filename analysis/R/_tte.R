@@ -1,6 +1,6 @@
 
 # Time to Event -----------------------
-timeToInitialTreatmentData <- function(executionSettings,
+timeToTreatmentDiscontinuationData <- function(executionSettings,
                                        treatmentHistory,
                                        eraCollapseSize,
                                        eventType,
@@ -66,7 +66,7 @@ timeToInitialTreatmentData <- function(executionSettings,
                                                             executionSettings$databaseId, targetCohorts$name,
                                                             paste0("th_", eventType, "_", eraCollapseSize, ".parquet"))) %>%
     tibble::as_tibble() %>%
-    dplyr::filter(event_seq == 1) %>%
+    #dplyr::filter(event_seq == 1) %>%
     dplyr::mutate(person_id = as.double(person_id))
 
 
@@ -82,12 +82,12 @@ timeToInitialTreatmentData <- function(executionSettings,
     dplyr::left_join(treatmentHistory, by = c("person_id"), multiple = "all") %>%
     dplyr::mutate(
       event = dplyr::if_else(cohort_end_date > event_start_date, 1L, 0L, 0L),
-      time = dplyr::if_else(
-        event == 1,
-        event_start_date - cohort_start_date,
-        cohort_end_date - cohort_start_date,
-        cohort_end_date - cohort_start_date
-      ),
+      # time = dplyr::if_else( # remove
+      #   event == 1,
+      #   event_start_date - cohort_start_date,
+      #   cohort_end_date - cohort_start_date,
+      #   cohort_end_date - cohort_start_date
+      # ),
       time = as.double(time),
       time_years = as.double(time) / 365.25,
       type = dplyr::if_else(

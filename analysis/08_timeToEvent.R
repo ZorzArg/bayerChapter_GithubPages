@@ -36,7 +36,7 @@ for (i in 1:length(eraCollapseSize)) {
 
     for(k in 1:length(eventType)) {
 
-  ttiDat <- timeToInitialTreatmentData(executionSettings = executionSettings,
+  ttiDat <- timeToTreatmentDiscontinuationData(executionSettings = executionSettings,
                                        eraCollapseSize = eraCollapseSize[i],
                                        eventType = eventType[k],
                                        targetCohorts = targetCohorts[j,],
