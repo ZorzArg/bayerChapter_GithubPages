@@ -1,8 +1,8 @@
 {
   "ConceptSets": [
     {
-      "id": 13,
-      "name": "[WHC] Combined progestogens and estrogens",
+      "id": 14,
+      "name": "[WHC] Combined progestogens and estrogens (updated)",
       "expression": {
         "items": [
           {
@@ -11,6 +11,21 @@
               "CONCEPT_CODE": "G03FB",
               "CONCEPT_ID": 21602585,
               "CONCEPT_NAME": "Progestogens and estrogens, sequential preparations",
+              "DOMAIN_ID": "Drug",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "C",
+              "STANDARD_CONCEPT_CAPTION": "Classification",
+              "VOCABULARY_ID": "ATC"
+            },
+            "includeDescendants": true
+          },
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "ATC 4th",
+              "CONCEPT_CODE": "G03FA",
+              "CONCEPT_ID": 21602567,
+              "CONCEPT_NAME": "Progestogens and estrogens, fixed combinations",
               "DOMAIN_ID": "Drug",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
@@ -28,7 +43,7 @@
     "CriteriaList": [
       {
         "DrugExposure": {
-          "CodesetId": 13
+          "CodesetId": 14
         }
       }
     ],

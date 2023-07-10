@@ -7,10 +7,10 @@ library(tidyverse, quietly = TRUE)
 
 
 ## Set variables ----------------
-configBlock <- "mrktscan"
+configBlock <- "cprd_aurum"
 outputFolder <- here::here("output", "01_buildCohorts", configBlock)
 
-cohortsToCreate <- picard::cohortManifest()  %>%
+cohortsToCreate <- picard::cohortManifest(inputPath = here::here("input/cohortsToCreate"))  %>%
   dplyr::filter(type != "diagnostics")
 
 
@@ -19,7 +19,11 @@ executionSettings <- getExecutionSettings(configBlock)
 
 
 ## Initialize Cohort Tables
+dropCohortTables(executionSettings = executionSettings)
+
 cohortTableNames <- initializeCohortTables(executionSettings = executionSettings)
+
+
 
 
 ### 1. Generate cohorts  ---------------------------

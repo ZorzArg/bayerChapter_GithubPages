@@ -20,7 +20,7 @@ targetCohorts <- cohortsToCreate %>%
   dplyr::filter(type == "studyPop") %>%
   dplyr::select(id, name)
 
-timeA <- c(-365L, -9999L)
+timeA <- -365L
 timeB <- -1L
 
 baselineSettings <- tidyr::expand_grid(targetCohorts, timeA) %>%
@@ -46,7 +46,7 @@ demographics <- purrr::pmap_dfr(
                             outputFolder = outputFolder)
 )
 
-View(demographics)
+#View(demographics)
 
 ### Save results - Parquet
 save_path <- fs::path(outputFolder, "demographics_baseline")
@@ -64,7 +64,7 @@ continuous <- purrr::pmap_dfr(
                          outputFolder = outputFolder)
 )
 
-View(continuous)
+#View(continuous)
 
 ### Save results - Parquet
 save_path <- fs::path(outputFolder, "continuous_baseline")
@@ -84,7 +84,7 @@ drugs <- purrr::pmap_dfr(
                    outputFolder = outputFolder)
 )
 
-View(drugs)
+#View(drugs)
 
 ### Save results - Parquet
 save_path <- fs::path(outputFolder, "drugs")
@@ -104,7 +104,7 @@ conditionsGroup <- purrr::pmap_dfr(
                               outputFolder = outputFolder)
 )
 
-View(conditionsGroup)
+#View(conditionsGroup)
 
 ### Save results - Parquet
 save_path <- fs::path(outputFolder, "condition_groups")
@@ -128,7 +128,7 @@ cohortCov <- purrr::pmap_dfr(
                        outputFolder = outputFolder)
 )
 
-View(cohortCov)
+#View(cohortCov)
 
 
 ### Save results - Parquet

@@ -8635,6 +8635,11 @@
         "ProcedureOccurrence": {
           "CodesetId": 0
         }
+      },
+      {
+        "DeviceExposure": {
+          "CodesetId": 0
+        }
       }
     ],
     "ObservationWindow": {
