@@ -259,34 +259,6 @@
           },
           {
             "concept": {
-              "CONCEPT_CLASS_ID": "Context-dependent",
-              "CONCEPT_CODE": "160397006",
-              "CONCEPT_ID": 4050823,
-              "CONCEPT_NAME": "FH: Early menopause",
-              "DOMAIN_ID": "Observation",
-              "INVALID_REASON": "V",
-              "INVALID_REASON_CAPTION": "Valid",
-              "STANDARD_CONCEPT": "S",
-              "STANDARD_CONCEPT_CAPTION": "Standard",
-              "VOCABULARY_ID": "SNOMED"
-            }
-          },
-          {
-            "concept": {
-              "CONCEPT_CLASS_ID": "Context-dependent",
-              "CONCEPT_CODE": "160398001",
-              "CONCEPT_ID": 4051695,
-              "CONCEPT_NAME": "FH: Late menopause",
-              "DOMAIN_ID": "Observation",
-              "INVALID_REASON": "V",
-              "INVALID_REASON_CAPTION": "Valid",
-              "STANDARD_CONCEPT": "S",
-              "STANDARD_CONCEPT_CAPTION": "Standard",
-              "VOCABULARY_ID": "SNOMED"
-            }
-          },
-          {
-            "concept": {
               "CONCEPT_CLASS_ID": "Qualifier Value",
               "CONCEPT_CODE": "198435007",
               "CONCEPT_ID": 4113665,
@@ -3162,6 +3134,7 @@
               },
               "UseEventEnd": false
             },
+            "IgnoreObservationPeriod": true,
             "Occurrence": {
               "Type": 0,
               "Count": 0
@@ -3183,6 +3156,7 @@
               },
               "UseEventEnd": false
             },
+            "IgnoreObservationPeriod": true,
             "Occurrence": {
               "Type": 0,
               "Count": 0
@@ -3204,6 +3178,7 @@
               },
               "UseEventEnd": false
             },
+            "IgnoreObservationPeriod": true,
             "Occurrence": {
               "Type": 0,
               "Count": 0
