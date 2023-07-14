@@ -133,10 +133,9 @@ treatmentPatterns <- function(executionSettings,
     dplyr::pull(nm) %>%
     unique()
 
-
-  patternsTable <- treatmentHistoryStratas %>%
-    dplyr::group_split() %>%
-    purrr::set_names(nm = strataNames)
+  # patternsTable <- treatmentHistoryStratas %>%
+  #   dplyr::group_split() %>%
+  #   purrr::set_names(nm = strataNames)
 
 
   # Tables

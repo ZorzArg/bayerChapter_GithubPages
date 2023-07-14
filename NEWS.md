@@ -1,3 +1,8 @@
+# bayerChapter 0.2.0
+
+- Function `postIndexCovariatesMap` has been updated
+- Added function `timeToTreatmentDiscontinuationData`
+
 # bayerChapter 0.1.2
 
 - Removed Device concept from `Depression` and `Mood disorder` concept sets

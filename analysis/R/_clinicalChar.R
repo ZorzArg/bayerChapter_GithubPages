@@ -2124,7 +2124,8 @@ postIndexCovariatesMap <- function(executionSettings,
   T5 AS (
     SELECT
       *,
-      (CASE WHEN covariate_start_date BETWEEN a AND b and covariate_start_date <= cohort_end_date THEN 1 ELSE 0 END) AS hit
+      --(CASE WHEN covariate_start_date BETWEEN a AND b and covariate_start_date <= cohort_end_date THEN 1 ELSE 0 END) AS hit
+      (CASE WHEN (covariate_start_date BETWEEN a AND b OR covariate_end_date >= a) and covariate_start_date <= cohort_end_date THEN 1 ELSE 0 END) AS hit
     FROM T4
     )
    SELECT

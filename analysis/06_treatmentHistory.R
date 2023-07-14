@@ -23,7 +23,7 @@ startSnowflakeSession(con = con, executionSettings = executionSettings)
 
 
 ### 1. Get Treatment History ----------------------
-eraCollapseSize <- c(30, 60)
+eraCollapseSize <- c(30, 60, 90, 180)
 
 eventType <- c("ingredient", "class3", "class1")
 

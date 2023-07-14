@@ -7,7 +7,7 @@ library(tidyverse, quietly = TRUE)
 
 
 ## Set variables ---------------
-configBlock <- "optum"
+configBlock <- "cprd_aurum"
 
 outputFolder <- here::here("output", "04_postIndexDrugs", configBlock)
 outputPath <- fs::path(outputFolder)
@@ -35,7 +35,7 @@ startSnowflakeSession(con, executionSettings)
 
 ### 1. Get Post-Index Drugs ---------------
 covariateKey <- cohortsToCreate %>%
-  dplyr::filter(type %in% c("class3","class1"))
+  dplyr::filter(type %in% c("class3", "class1", "ingredient"))
 
 #debug(postIndexCovariatesMap)
 postIndexDrugs <- purrr::pmap_dfr(

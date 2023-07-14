@@ -12,15 +12,15 @@ source("analysis/R/_tte.R")
 ## Set variables -------------
 database <- c("mrktscan", "optum", "cprd_aurum", "cprd_gold")
 
-
 ### 1. Time-to-event ----------------
-eraCollapseSize <- c(30,60)
+eraCollapseSize <- c(30, 60, 90, 180)
 
 eventType <- c("ingredient", "class3", "class1")
 
 cohortManifest <- readr::read_csv(here::here("output", "01_buildCohorts", database, "cohortManifest.csv"),
                                   show_col_types = FALSE) %>%
   dplyr::filter(type == "studyPop")
+
 
 
 for (i in 1:length(database)) {
@@ -33,6 +33,7 @@ for (i in 1:length(database)) {
 
           tte <- readr::read_rds(here::here("output", "08_timeToInitialTreatment", database[i], cohortManifest$name[t],
                                             paste0("tte_", eventType[g], "_", eraCollapseSize[j], ".rds")))
+
           tteStratas <- names(tte) # Number of list elements (stratas)
 
         for (k in 1:length(tteStratas)) {
