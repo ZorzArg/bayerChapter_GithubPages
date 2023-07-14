@@ -2260,7 +2260,7 @@
       "PostDays": 183
     },
     "PrimaryCriteriaLimit": {
-      "Type": "First"
+      "Type": "All"
     }
   },
   "QualifiedLimit": {
@@ -2291,6 +2291,7 @@
               },
               "UseEventEnd": false
             },
+            "IgnoreObservationPeriod": true,
             "Occurrence": {
               "Type": 0,
               "Count": 0
@@ -2312,6 +2313,7 @@
               },
               "UseEventEnd": false
             },
+            "IgnoreObservationPeriod": true,
             "Occurrence": {
               "Type": 0,
               "Count": 0
@@ -2333,6 +2335,7 @@
               },
               "UseEventEnd": false
             },
+            "IgnoreObservationPeriod": true,
             "Occurrence": {
               "Type": 0,
               "Count": 0
