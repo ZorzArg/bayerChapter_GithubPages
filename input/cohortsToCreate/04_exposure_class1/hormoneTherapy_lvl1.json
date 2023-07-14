@@ -197,6 +197,13 @@
     "Type": "First"
   },
   "InclusionRules": [],
+  "EndStrategy": {
+    "CustomEra": {
+      "DrugCodesetId": 0,
+      "GapDays": 0,
+      "Offset": 0
+    }
+  },
   "CensoringCriteria": [
     {
       "VisitOccurrence": {
@@ -209,7 +216,7 @@
   ],
   "CollapseSettings": {
     "CollapseType": "ERA",
-    "EraPad": 0
+    "EraPad": 30
   },
   "CensorWindow": {},
   "cdmVersionRange": ">=5.0.0"
