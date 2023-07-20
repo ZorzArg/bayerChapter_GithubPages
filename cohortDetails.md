@@ -103,7 +103,7 @@ The general cohort skeleton is a simple prevalent condition cohort.
 
 All exposure cohort follow the same skeletal logic:
 
-- Index event: a drug exposure with at least 365 days of prior observation. Include all events
+- Index event: a drug exposure with at least 365 days of prior observation. 
 - Exit: based on persistence to the index drug exposure and censor for when patients turn 65 based on a visit occurrence
 - Era: collapse drug eras based on 30 day gaps
 
