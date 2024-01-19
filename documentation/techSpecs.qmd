@@ -21,6 +21,9 @@ You also require your site data to be mapped to the [OMOP CDM](https://ohdsi.git
 -   Google BigQuery
 -   Amazon Redshift
 -   Snowflake
+-   DuckDB
+-   DataBricks
+-   Oracle
 
 ## Downloading JDBC Driver
 
@@ -53,7 +56,7 @@ Prior to running this study, it is expected that the data node has performed som
 
 ## R Version
 
-This study requires a minimal R version  of 4.1.3 (2022-03-10). [Link to windows installer](https://cloud.r-project.org/bin/windows/base/old/4.1.3/). 
+This study requires a minimal R version of 4.1.3 (2022-03-10). [Link to R website](https://cran.r-project.org/). 
 
 ## R Environment
 
@@ -67,7 +70,7 @@ renv::restore()
 
 Some organizational IT setups pose conflicts with `renv`. One example is if your organization uses the Broadsea Docker. If you have a conflict with `renv` please complete the following steps:
 
-1) Run `renv::deactivate()` in the active ehden .RProj
+1) Run `renv::deactivate()`
 2) Review table below with installed versions of R packages
 3) If a dependency is missing, install it manually. The code below provides examples of scenarios on how to install an R package: 
 
@@ -98,10 +101,10 @@ remotes::install_github("ohdsi/CohortGenerator", ref = "v0.7.0")
 
 It is **highly recommended** you stick with the `renv` snapshot as this is the easiest way to reproduce the study execution environment. 
 
-
+<!--
 ## R Packages
 
-The following is an exhaustive list of R packages active during the development of the EHDEN HMB study:
+The following is an exhaustive list of R packages active during the development of the Bayer CHAPTER study:
 
 ```{r}
 #| label: PackageList
@@ -118,5 +121,6 @@ readr::read_csv(here::here("data/installed_packages.csv"),
 
 ```
 
+-->
 
 

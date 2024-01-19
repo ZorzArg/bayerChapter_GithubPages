@@ -3,7 +3,7 @@ title: Study Analysis Plan for EHDEN HMB
 author: 
   - Martin Lavallee
   - Siir Su Saydam
-  - Marta Pineda Moncusi
+  - Victoria Banks
   - Asieh Golozar
 date: "2023-08-04"
 number-sections: true
@@ -17,18 +17,14 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Background {#sec-background}
 
-Heavy menstrual bleeding (HMB) is a symptom that has been defined as an “excessive menstrual blood loss, which interferes with a woman’s physical, social, emotional and/or material quality of life, and which can occur alone or in combination with other symptoms” [@munro2018; @karlsson2014; @Shimamoto2021-sd; @Weyand2022-ay]. Large real-world population-based studies are not currently available to quantify and comprehensively characterize women with HMB with respect to age at diagnosis, reproductive history and reproductive age, underlying conditions associated with HMB, as well as other comorbidities and comedications.
+Natural menopause is the process by which women stop menstruating due to ovarian aging (1) typically between the ages of 40-65 years. While a natural process, menopausal women can experience a variety of physical and psychological symptoms that impact their quality of life. One such trait of menopause are vasomotor symptoms (VMS), which encompasses hot flashes and night-time awakenings secondary to hot flashes (2). VMS occurs in approximately 75-80% of menopausal women and are often considered the cardinal symptoms of menopause (3, 4).
 
-The concept for this study originated from a study proposal awarded by the European Health Data and Evidence Network (EHDEN), a public-private consortium of the Innovative Medicine Initiative (IMI). EHDEN is creating a federated network of real-world data (RWD) sources across Europe, all of which are standardized to the Observational Medical Outcomes Partnerships (OMOP) common data model (CDM), which maps diverse database codes to a standardized set of concepts. The use of standardized OMOP CDM data is particularly relevant for this study, as it enables the characterization of HMB patients and their treatment pathways across multiple countries and healthcare systems. 
-
-This study is designed in two parts. Part 1 of this study is conducted internally by Bayer to describe incidence of HMB, clinical characteristics of women diagnosed with HMB and treatment pathways in five healthcare databases covering the UK, Germany, France and the US. This study is later amended for the currently proposed study (Part 2) to be released for execution in additional countries within EHDEN. The study will generate evidence to identify women diagnosed with HMB in respective databases, as well as these patients’ baseline characteristics and longitudinal treatment pathways across countries with different healthcare systems. The purpose of this document is to elaborate on the study design constructed by Odysseus Data Services.  A separate protocol has been written by Bayer.
-
+This study is a large-scale characterization study of clinical features in menopausal women's treatment using databases mapped to the Observational Medical Outcomes Partnership (OMOP) Common Data Model (CDM). This study uses standardized approaches and tools developed by the Observational Health Data Sciences and Informatics (OHDSI) community for the OMOP CDM. This approach ensures reliable and reproducible evidence from a wide range of data from different sources. Through this study differences in the usage of prescribed menopausal medications under diverse geographical settings and medical systems within the US and the United Kingdom (UK) will be investigated.
 
 # Research Questions {#sec-questions}
 
--   What are the characteristics of women diagnosed with HMB in terms of demographics, comorbidities, procedures, and comedication?
--   What are the treatment patterns of women diagnosed with HMB?
--   What is the incidence of HMB across different countries and data sources?
+-   What are the treatment pathways (defined as the ordered sequence of medications that a woman is prescribed) of different prescription medications used to manage symptoms of menopause in a real-world setting in the US and UK?
+-   What are the treatment pathways of prescribed medications used to manage VMS or sleep disturbances in women of menopausal age in a real-world setting in the US and UK?
 
 # Objectives
 
@@ -36,79 +32,208 @@ This study is designed in two parts. Part 1 of this study is conducted internall
 
 The primary objectives of this study are to:
 
--   Describe demographics and baseline clinical characteristics of women of reproductive age diagnosed with HMB.
--   Describe treatment utilization and longitudinal treatment pathways of women of reproductive age diagnosed with HMB across different countries and data sources.
+-   Describe treatment pathways and duration of treatments used to manage symptoms of menopausal women across a network of observational data.
+-   Describe demographics and baseline clinical characteristics of menopausal women across a network of observational data.
+-   Describe the frequency of drug utilization for treatments used to manage symptoms of menopause across a network of observational data. Further, to consider the frequency of utilization for on and off label treatments for VMS in menopausal women.
+-   Describe the incidence of symptoms of menopause following menopause diagnosis across a network of observational data. These symptoms being those that women would seek treatments for management e.g VMS, sleep disturbances, vaginal dryness.
 
 ## Exploratory Objectives {#sec-exploratoryObj}
 
-The exploratory objectives of this study are to: 
+Due to known limitations in the recording of menopause diagnosis in observational healthcare databases, in addition to the primary objectives, exploratory objectives to this study will focus on women of menopausal age with 1) an index diagnosis of a menopausal symptom (VMS or sleep disturbances) and 2) an index of a prescription of HT.
 
-- Estimate the incidence of HMB per calendar year and over the entire study period. 
-- Describe country-specific guideline compliant treatment use where national treatment guidelines are available for HMB.
+For exploratory cohort 1) an index diagnosis of a menopausal symptom (VMS or sleep disturbances), the exploratory objectives are:
 
+-   Describe treatment pathways and duration of treatments used in menopausal women across a network of observational data.
+-   Describe demographics and baseline clinical characteristics of menopausal women across a network of observational data.
+
+For exploratory cohort 2) an index of a prescription of HT, all objectives as listed under the primary objectives will be assessed.
 
 # Study Design {#sec-design}
 
-This large-scale retrospective cohort study will be conducted across a network of European healthcare databases standardized to the OMOP CDM. Databases assessed in this study are either: a) Bayer data assets (CPRD GOLD, CPRD Aurum, Optum Claims, MarketScan) or b) participating EHDEN data partners. The final list of EHDEN data partners will be provided in the Data Sources section.
+This large-scale retrospective cohort study will be conducted across a network of healthcare databases standardized to the OMOP CDM. Databases assessed in this study are: a) Bayer data assets (CPRD GOLD, CPRD Aurum, Optum Claims, MarketScan). The final list of databases will be provided in the Data Sources section.
 
-The study period begins on January 1, 1999 (or earliest date of data availability following this date) and ends at the latest date of data availability in each database. Persons involved in this study must have a minimum of one-year prior observation in the database, therefore the indexing period begins on January 1, 2000.
+The study period begins on January 1, 2009 (or earliest date of data availability after January 1, 2009) and ends at the latest date of data availability in each database. Persons involved in the study must have a minimum of one-year prior observation in the database prior to index date and 183 days post index date. The indexing period is between on January 1, 2010 and 6 months prior to the end of the study period.
 
-The study population for this study are women between the ages of 11 and 55 who have a first-time diagnosis of HMB, given that they have at least 365 days of continuous observation prior to the index date. More details of the study population are found in @sec-target.
+The study populations for this study are the following:
 
-See figure 1 for details of the study design
+1)  Natural menopausal women: women between the ages of 40 and 65 with a first diagnosis of menopause
 
-![Figure 1: Study Design](images/studyDesign.png)
+2)  Natural menopausal women contraindicated for HT: women between the ages of 40 and 65 with a first diagnosis of menopause and with at least one record of breast cancer, stroke, venous thromboembolism, gynecological cancer, brain meningioma or myocardial infarction (contraindications for HT)
 
+3)  Women with natural menopause who have a family history of breast cancer: women between the ages of 40 and 65 with a first diagnosis of menopause and a family history of breast cancer
+
+4)  Women with or at high risk of breast cancer exposed to endocrine-adjuvant therapy: women aged 18 or above with breast cancer or those at high risk of breast cancer that initiate treatment with endocrine-adjuvant therapy
+
+5)  Women with menopause symptoms: women between the ages of 40 and 65 with a initial diagnosis of a menopause symptom (VMS or sleep disturbances)
+
+6)  Women with initial prescription to hormone therapy: women between the ages of 40 and 65 with a initial prescription for hormone therapy
+
+More details for each of the study populations can be found in @sec-target.
+
+See the figures below for graphical depictions of the cohort designs.
+
+![Figure 1: Natural menopausal women cohort design](images/c1_design.png)
+
+![Figure 2: Natural menopausal women contraindicated for HT cohort design](images/c2_design.png)
+
+![Figure 3: Women with natural menopause who have a family history of breast cancer cohort design](images/c3_design.png)
+
+![Figure 4: Women with or at high risk of breast cancer exposed to endocrine-adjuvant therapy cohort design](images/c4_design.png)
+
+![Figure 5: Women with menopause symptoms cohort design](images/c5_design.png)
+
+![Figure 6: Women with initial prescription to hormone therapy cohort design](images/c6_design.png)
 
 ## Study Population {#sec-target}
 
-The study population are women between the ages of 11 to 55 who with a diagnosis of heavy-menstrual bleeding (index event) on or after January 1, 2000 and up to the date of latest data availability at the time of study conduct. Study end date might show variability across data sources. Women entering the HMB cohort must have a minimum of 365 days of prior observation. Female patients are excluded from the cohort if they have one of the following criteria:
+The operational definitions of the target cohorts are defined below.
 
-1)	Observation of a hysterectomy or bilateral oophorectomy on or anytime prior to index date
-2)	Observation of a menopause (induced or natural) diagnosis on or anytime prior to index date
-3)	Observation of postcoital bleeding on or 365 days prior to index date
-4)	Observation of medical records indicating pregnancy on or 180 days prior to index date 
-5)	Observation of uterine or ovarian cancer diagnosis on or anytime prior to index date 
+### Cohort 1: Natural Menopausal Women
 
-Female patients are followed up until end of continuous observation or observation of one of the following, whichever occurs first:
+**Index Event:**
 
--	Death
--	At least one visit occurrence  at age > 55 years (visit occurrences capture any type of healthcare interaction in the database, to account for patients reach the age of > 55 years)
--	At least one observation of a hysterectomy or bilateral oophorectomy
--	At least one observation of a menopause diagnosis
--	At least one observation of uterine or ovarian cancer diagnosis 
--	At least on observation of medical records related to pregnancy 
+-   One or more condition, observation or procedure for a menopause diagnosis
+-   Must be the first record of menopause diagnosis in the database for the patient
+-   Must occur between 01/01/2010 and 183 days prior to the end of the study period
 
+**Inclusion criteria:**
 
-### Incidence Denominator Cohort {#sec-denominator}
+-   Only female patients that are between 40 and 65 years of age at index event
+-   At least 365 days continuous observation in the database prior to index event
+-   At least 183 days continuous observation in the database post the index event
 
-For the incidence calculation, the denominator is  women with any kind of healthcare (index event) observed between the years of 2000 and 2022. Women in the denominator cohort must have a minimum of 365 days of prior observation and no record of hysterectomy, bilateral oophorectomy, or menopause (natural or induced) diagnosis in the patient records.  
+**Exclusion criteria:**
 
-Female patients are followed up until end of continuous observation or observation of one for the follow, whichever occurs first:
+-   Procedure or observation record of bilateral oophorectomy or radical hysterectomy at any time before the index event
+-   Exposure to an endocrine adjuvant therapy (Tamoxifen, Gonadotropin-releasing hormone (GnRH) analogs or Aromatase Inhibitors (AI)) in the 12 months prior to or including the index event
+-   Exposure to a hormonal (e.g., estradiol, conjugated estrogens, estrogen depot, tibolone, estriol, estetrol, hormone combinations, progestogens, topical estrogens) or non-hormonal treatment (e.g., Clonidine, SSRI/SNRIs) in the 12 months prior to the index event
 
-- end of continuous observation in the database
-- at least one visit occurrence at age > 55 years
-- menopause (induced or natural)
-- hysterectomy or bilateral oophorectomy
-- uterine or ovarian cancer
-- death
+### Cohort 2: Natural Menopausal Women contraindicated for HT
 
-Concepts and logic for the cohort definitions of the study population and incidence denominator will be supplied in the *CohortDetails* supplementary file. 
+**Index Event:**
 
+-   One or more condition, observation or procedure for a menopause diagnosis
+-   Must be the first record of menopause diagnosis in the database for the patient
+-   Must occur between 01/01/2010 and 183 days prior to the end of the study period
 
-## Exposure Definition
+**Inclusion criteria:**
 
-There is no exposure definition in this study. 
+-   Only female patients that are between 40 and 65 years of age at index event
+-   At least 365 days continuous observation in the database prior to index event
+-   At least 183 days continuous observation in the database post the index event
+-   At least 1 condition record of breast cancer, stroke, venous thromboembolism, gynecological cancer (ovarian, endometrial, uterine, or cervical cancer), benign brain meningioma or myocardial infarction at any time prior to and including the index event.
 
+**Exclusion criteria:**
 
-## Outcome Definition
+-   Procedure or observation record of bilateral oophorectomy or radical hysterectomy at any time before the index event
+-   Exposure to an endocrine adjuvant therapy (Tamoxifen, Gonadotropin-releasing hormone (GnRH) analogs or Aromatase Inhibitors (AI)) in the 12 months prior to or including the index event
+-   Exposure to a hormonal (e.g., estradiol, conjugated estrogens, estrogen depot, tibolone, estriol, estetrol, hormone combinations, progestogens, topical estrogens) or non-hormonal treatment (e.g., Clonidine, SSRI/SNRIs) in the 12 months prior to the index event
 
-There is no outcome definition in this study. 
+### Cohort 3: Natural Menopausal Women with family history of breast cancer
 
+**Index Event:**
+
+-   One or more condition, observation or procedure for a menopause diagnosis
+-   Must be the first record of menopause diagnosis in the database for the patient
+-   Must occur between 01/01/2010 and 183 days prior to the end of the study period
+
+**Inclusion criteria:**
+
+-   Only female patients that are between 40 and 65 years of age at index event
+-   At least 365 days continuous observation in the database prior to index event
+-   At least 183 days continuous observation in the database post the index event
+-   At least 1 condition record of family history of breast cancer at any time prior to or including the index event
+
+**Exclusion criteria:**
+
+-   Procedure or observation record of bilateral oophorectomy or radical hysterectomy at any time before the index event
+-   Exposure to an endocrine adjuvant therapy (Tamoxifen, Gonadotropin-releasing hormone (GnRH) analogs or Aromatase Inhibitors (AI)) in the 12 months prior to or including the index event
+-   Exposure to a hormonal (e.g., estradiol, conjugated estrogens, estrogen depot, tibolone, estriol, estetrol, hormone combinations, progestogens, topical estrogens) or non-hormonal treatment (e.g., Clonidine, SSRI/SNRIs) in the 12 months prior to the index event
+
+### Cohort 4: Women with breast cancer or at high risk of breast cancer exposed to endocrine-adjuvant therapy
+
+**Index Event:**
+
+-   One or more drug exposure to an endocrine adjuvant therapy (Tamoxifen, GnRH analogs or AI)
+-   Must be the first record of endocrine adjuvant therapy in the database for the patient
+-   Must occur between 01/01/2010 and 183 days prior to the end of the study period
+
+**Inclusion criteria:**
+
+-   Only female patients that are between 18 and 65 years of age at index event
+-   At least 365 days continuous observation in the database prior to index event
+-   At least 183 days continuous observation in the database post the index event
+-   At least 1 condition occurrence of breast cancer or at least 1 condition occurrence for being high risk for breast cancer \[BRCA mutation, family history of breast cancer, family history of ovarian cancer, mastectomy or carcinoma in situ (CIS) of the breast including ductal carcinoma in situ (DCIS)\] at any time in the database prior to or including the index event date
+
+### Cohort 5: Women with menopause symptoms
+
+**Index Event:**
+
+-   One or more condition, observation or procedure of a symptom of menopause (VMS or sleep disturbances)
+-   Must occur between 01/01/2010 and 183 days prior to the end of the study period
+
+**Inclusion criteria:**
+
+-   Only female patients that are between 40 and 65 years of age at index event
+-   At least 365 days continuous observation in the database prior to index event
+-   At least 183 days continuous observation in the database post the index event
+
+**Exclusion criteria:**
+
+-   Procedure or observation record of bilateral oophorectomy or radical hysterectomy at any time before the index event
+-   Exposure to an endocrine adjuvant therapy (Tamoxifen, Gonadotropin-releasing hormone (GnRH) analogs or Aromatase Inhibitors (AI)) in the 12 months prior to or including the index event
+-   Exposure to a hormonal (e.g., estradiol, conjugated estrogens, estrogen depot, tibolone, estriol, estetrol, hormone combinations, progestogens, topical estrogens) or non-hormonal treatment (e.g., Clonidine, SSRI/SNRIs) in the 12 months prior to the index event
+
+### Cohort 6: Women with initial prescription to hormone therapy
+
+**Index Event:**
+
+-   One or more occurrence of hormonal therapy
+-   Must be the first record of hormonal therapy in the database for the patient
+-   Must occur between 01/01/2010 and 183 days prior to the end of the study period
+
+**Inclusion criteria:**
+
+-   Only female patients that are between 40 and 65 years of age at index event
+-   At least 365 days continuous observation in the database prior to index event
+-   At least 183 days continuous observation in the database post the index event
+
+**Exclusion criteria:**
+
+-   Procedure or observation record of bilateral oophorectomy or radical hysterectomy at any time before the index event
+-   Exposure to an endocrine adjuvant therapy (Tamoxifen, Gonadotropin-releasing hormone (GnRH) analogs or Aromatase Inhibitors (AI)) in the 12 months prior to or including the index event
+-   Exposure to a hormonal (e.g., estradiol, conjugated estrogens, estrogen depot, tibolone, estriol, estetrol, hormone combinations, progestogens, topical estrogens) or non-hormonal treatment (e.g., Clonidine, SSRI/SNRIs) in the 12 months prior to the index event
+
+## Exposure Definition {#sec-exposure}
+
+In this study, there are five exposure cohorts defined by groupings of treatments used to manage symptoms of menopause. These cohorts are defined as an index exposure to one of the five treatments to manage symptoms of menopause (listed below) with 365 days of prior observation required. The exposure cohorts are followed-up until a) end of continuous observation or b) a visit occurrence at age 65 or above (indicating the end of menopause), c) end of the study period. The exposure cohort is depicted graphically in the figure below.
+
+![Figure 7: Study Design](images/exposure_design.png)
+
+These treatment groups are defined using the ATC hierarchy and include the descendant ingredients of the respective class. The exposures are defined as follows:
+
+-   Hormonal Therapy (HT)
+-   Antidepressants prescribed for menopausal management
+-   Anticonvulsants prescribed for menopausal management
+-   Anti-hypertensives prescribed for menopausal management
+-   Benzodiazepines prescribed for menopausal management
+
+## Outcome Definition {#sec-outcomes}
+
+This study considers incidence of menopausal symptoms where the occurrence of a subsequent menopausal symptom is considered the outcome. The purpose of this part of the analysis is to contextualize the treatment patterns and utilization over time with the incidence of symptoms over time, which may cause women to change their treatment plan. This outcome only corresponds to the analysis for the primary objective where a menopause diagnosis (defined by cohorts 1-4 in section @sec-design) is the index event and exploratory cohort 2, an index of a prescription of HT (defined in section @sec-design). Symptoms to be assessed as outcomes post-index include:
+
+-   VMS (Hot flashes and night sweats)
+-   iVMS
+-   Sleep Disturbances
+-   Combined Mood Disorder (Depression and Anxiety)
+-   Depression
+-   Anxiety
+-   Bipolar Disorder
+-   Vaginal Dryness
 
 # Data Sources {#sec-dataSources}
 
-The data sources for this study include a) Bayer OMOP assets of CPRD Aurum, CPRD GOLD, Optum Claims, MarketScan and b) European databases that are part of EHDEN. All databases used in this study have been standardized to the OMOP CDM. The table below is subject to change upon confirmation of data partners. 
+The data sources for this study include a) Bayer OMOP assets of CPRD Aurum, CPRD GOLD, Optum Claims, MarketScan and b) European databases that are part of EHDEN. All databases used in this study have been standardized to the OMOP CDM. The table below is subject to change upon confirmation of data partners.
 
 ```{r}
 #| label: tbl-data_sources
@@ -121,59 +246,50 @@ dataSources <- tibble::tribble(
   "CPRD AURM", "UK", "EHR", "<Count>", "<Dates>", "Primary care data from across the UK",
   "Optum Claims", "US", "Claims", "<Count>", "<Dates>", " US commercial claims covering all 50 states",
   "MarketScan", "US", "Claims", "<Count>", "<Dates>", " US commercial claims covering all 50 states",
-  "Hospital del Mar", "Spain", "EHR", "<Count>", "<Dates>", "Hospital data from Barcelona Spain", 
-  "Ministry of Health", "Israel", "EHR", "<Count>", "<Dates>", "<Description>", 
-  "Cegedim THIN", "Belgium", "EHR", "<Count>", "<Dates>", "<Description>", 
-  "Disease Analyzer", "Germany", "EHR", "<Count>", "<Dates>", "<Description>",
-  "FinnGen", "Finland", "EHR", "<Count>", "<Dates>", "<Description>",
-  "Semmelweis University", "Hungary", "EHR", "<Count>", "<Dates>", "<Description>",
-  "University of Oslo", "Norway", "EHR", "<Count>", "<Dates>", "<Description>"
+  "Disease Analyzer", "Germany", "EHR", "<Count>", "<Dates>", "<Description>"
 )
 
 knitr::kable(dataSources)
 
 ```
 
-
-# Analysis Plan 
+# Analysis Plan
 
 ## Cohort Diagnostics {#sec-cd}
 
-Prior to running any specific analysis, we will evaluate the HMB cohort using the OHDSI R package `CohortDiagnostics` [@cd]. This package produces metrics such as cohort counts in the database, incidence rates (by calendar year, age and gender), time distributions, cohort attrition and breakdown of index events. Evaluation of these metrics helps ensure that the clinical cohort is indeed reliable in capturing HMB in the OMOP database.
+Prior to running any specific analysis,the four menopausal cohort definitions of the primary objectives defined in section @sec-design will be evaluated using the OHDSI R package `CohortDiagnostics` [@cd]. This package produces metrics such as cohort counts in the database, incidence rates (by calendar year, age and gender), time distributions, cohort attrition and breakdown of index events. Evaluation of these metrics helps ensure that the clinical cohort is indeed reliable in capturing HMB in the OMOP database.
 
 ## Stratification
 
-All analysis is stratified by three age groups:
+Each target cohort will be analyzed in full and stratified on the following pre-index / at-index characteristics pending meeting a minimum reportable cell count of greater than 10 persons.
 
-- Age less than 30 years old
-- Age between 30 and 45
-- Age between 45 and 55
+-   Depression (0 to 183 days prior to index date)
+-   Anxiety (0 to 183 days prior to index date)
+-   Combined Mood Disorder (Depression and Anxiety) (0 to 183 days prior to index date)
+-   Benzodiazepines (0 to 183 days prior to index date)
+-   Organic Sleep (0 to 183 days prior to index date)
+-   Sleep Disturbances (at index date)
+-   VMS (at index date)
+-   iVMS (at index date)
+-   Age at index date:
+    -   Between 18 and 39
+    -   Between 40 and 49
+    -   Between 50 and 59
+    -   Between 60 and 65
 
 ## Baseline Characteristics {#sec-baseline}
 
-We assess baseline characteristics based on an observation window of 365 to 0 days prior to the index date , unless specified otherwise. Categorical covariates are reported as counts and percentages. Continuous covariates are reported as median, interquartile range (25th and 75th percentile), minimum and maximum.
+We assess baseline characteristics based on an observation window of 365 to 1 days prior to the index date , unless specified otherwise. Categorical covariates are reported as counts and percentages. Continuous covariates are reported as median, interquartile range (25th and 75th percentile), minimum and maximum.
 
 **Demographics**
 
--   Age at HMB diagnosis as 5-year categories
--   Age at HMB diagnosis as continuous
+-   Age on index date as 5-year categories
+-   Age on index date as continuous
 -   Race (if available)
--   Ethnicity (if available)
--   Year of HMB Diagnosis (per calendar year)
--   Comorbidity Scores
-    -   Charlston Comorbidity Score (as a continuous score)
-    -   CHADs2Vasc (as a continuous score)
--   BMI (if available) continuous and in following categories
-    -   Underweight (< 18.5 kg/m^2)
-    -   Normal Weight (18.5 - 24.9 kg/m^2)
-    -   Overweight (25.0 - 29.9 kg/m^2)
-    -   Obese (30.0 - 39.9 kg/m^2)
-    -   Morbidly obese (> 40.0 kg/m^2)
-    -   Missing
 
 **Concept-based**
 
-For analysis on data converted to the OMOP CDM, covariates can be assessed based on either singular standardized concepts from the OMOP Vocabulary or by bundling multiple concepts through cohort definitions. A concept-based covariate describes the occurrence of an event based on the presence of a standardized code in the OMOP CDM. For conditions, standardized concepts are based on Systematized Nomenclature of Medicine Vocabulary (SNOMED) and its hierarchy; including descendant concepts that are linked to the top-level term. For drugs, standardized concepts are based on the RxNorm vocabulary, where the hierarchy is rolled up to classes of the Anatomical Therapeutic Chemical (ATC) vocabulary. Assessing concept-based covariates, in an OMOP analysis, is a general approach to assessing the clinical features of a population because it considers a very large set of features with minimal user specification. 
+For analysis on data converted to the OMOP CDM, covariates can be assessed based on either singular standardized concepts from the OMOP Vocabulary or by bundling multiple concepts through cohort definitions. A concept-based covariate describes the occurrence of an event based on the presence of a standardized code in the OMOP CDM. For conditions, standardized concepts are based on Systematized Nomenclature of Medicine Vocabulary (SNOMED) and its hierarchy; including descendant concepts that are linked to the top-level term. For drugs, standardized concepts are based on the RxNorm vocabulary, where the hierarchy is rolled up to classes of the Anatomical Therapeutic Chemical (ATC) vocabulary. Assessing concept-based covariates, in an OMOP analysis, is a general approach to assessing the clinical features of a population because it considers a very large set of features with minimal user specification.
 
 -   Drug Era individual and rolled up to ATC2 Categories
 -   Condition Era individual and rolled up to ICD10 Chapters
@@ -184,181 +300,81 @@ For analysis on data converted to the OMOP CDM, covariates can be assessed based
 
 Cohort-based covariates, in an OMOP analysis, are more specific definitions of clinical concepts of interest that are built using multiple concepts from the OMOP standardized vocabulary. Cohort-based covariates are used in the context of this study to specifically identify conditions of interest, determined prior to the study execution, that are not sufficiently identified via single concepts in the OMOP vocabulary.
 
--   Conditions
-    -   Underlying Causes of HMB (individual)
-        -   Uterine endometrial polyps
-        -   Adenomyosis
-        -   Uterine leiomyoma (fibroids) (subserous or intramural)
-        -   Uterine malignancy and endometrial hyperplasia
-        -   Coagulopathy / coagulation disorders
-        -   Ovulatory dysfunction (including hypothyroidism, polycystic ovary syndrome, adrenal disorders, hyperprolactinemia, hypothalamic disorders)
-        -   Endometrial dysfunction
-        -   Iatrogenic HMB
-        -   Endometriosis
-        -   Idiopathic menorrhagia
-    -   Other Conditions
-        -   Diabetes Mellitus
-        -   Polycystic Ovary Syndrome (PCOS)
-        -   Dysmenorrhea
-        -   Pain
-        -   Anemia
-        -   Iron deficiency anemia
--   Comedications
-    -   Antithrombotic Agents
-    -   Antidepressants
-    -   Tamoxifen
-    -   Antipsychotics
-    -   Gonadal Steroids
-    -   Tranexamic acid
-    -   Progestin only regimens:
-        -   Medroxyprogesterone acetate (MPA)
-        -   Oral norethindrone acetate (NETA)
-        -   Desogestrel
-        -   Etonogestrel implant
-        -   Drospirenone
-    -   Non-steroidal anti-inflammatory drugs (NSAIDs)
-    -   Combined oral hormonal contraceptives
-    -   Ulipristal acetate
-    -   Danazol
-    -   Gonadotropin releasing hormone analogues
-    -   Intrauterine devices
-    -   Iron preparations
--   Procedures
-    -   Endometrial ablation
-    -   Uterine artery embolization (UAE)
-    -   Myomectomy
-    -   Blood transfusion
-    -   Intrauterine devices (recorded as procedures)
+-   Alopecia
+-   Anxiety
+-   Breast cancer
+-   Cancer (excluding skin cancers)
+-   Bipolar Disorder
+-   Depression without bipolar
+-   Gynecological cancers
+-   Hypertension
+-   Hyperthyroidism
+-   Hypothyroidism
+-   Malaise or fatigue
+-   Myocardial Infarction
+-   Osteoarthritis
+-   Osteoporosis
+-   Type 2 Diabetes
+-   Stroke ischemic or hemorrhagic
+-   Venous thromboembolism
 
+## Post-Index Characteristics {#sec-postIndex}
 
-Concepts and logic for these cohort definitions will be supplied in the CohortDetails supplementary file. 
+Specific drug classes and procedures that are prescribed post-index will be described. Exposure to selected medications under the following categories will be observed across multiple time windows: 0 to 183 days, 184 to 365 days, 366 to 730 days, and 731 to 1825 days from index date. The drug classes are:
 
-## Underlying Causes of HMB {#sec-underlying}
-
-In addition to assessing characteristics at baseline, proportion of patients with underlying causes of HMB will be calculated. Conditions that are considered to be underlying causes of HMB will be characterized prior 365 days prior to and including index as well as post-index in the following time intervals: 1 to 365 days, 366 to 730 days, and 731 to 1825 days from index date. Reported counts will be limited to the first occurrence of the underlying cause. The underlying causes of HMB are:
-
-- Uterine endometrial polyps
-- Adenomyosis
-- Uterine leiomyoma 
-- Endometrial hyperplasia
-- Coagulopathy or coagulation disorders
-- Ovulatory dysfunction (including hypothyroidism, polycystic ovary syndrome, adrenal disorders, hyperprolactinemia, hypothalamic disorders)
-- Endometriosis
-
-The logic and concept set for the cohort definitions for these underlying causes of HMB will be supplied in the CohortDetails supplementary document. 
-
+-   Antidepressants (including selected SSRIs/SNRIs)
+-   Anticonvulsants (including gabapentin and pregabalin)
+-   Anti-hypertensives (including clonidine)
+-   Hormonal Therapy
+-   Sedative hypnotics (including benzodiazepines)
 
 ## Treatment Patterns {#sec-TxPat}
 
-In this study we assess the treatment patterns for female patients with HMB which encompasses three metrics: first, the prevalence of drug use at pre-defined time windows post-index; second, the patterns of treatments including single drugs and combinations of treatment (later referred to as treatment pathways); and third, the length of time spent taking the drug exposures of interest, both as single exposures or in combination (time to treatment discontinuation). The drug exposures of interest can be defined as prescription treatments and treatment procedures.
+An objective of this study is to characterize treatment pathways and the duration of use of different prescription medications used for symptoms of menopause. Therefore, the outcomes of the study are the description of the ordered sequence of treatments and the time to discontinuation of each treatment in that sequence. Further, the treatment patterns are stratified by calendar year. Treatment patterns are constructed first based on prescriptions per class (listed in section @exposure), then per specific ingredients of each class.
 
-Prescription treatments of interest are:
+The ingredients of interest are:
 
--   Tranexamic acid
--   Progestin only regimens:
-    -   Medroxyprogesterone acetate (MPA)
-    -   Oral norethindrone acetate (NETA)
-    -   Desogestrel
-    -   Etonogestrel implant
-    -   Drospirenone
--   Non-steroidal anti-inflammatory drugs (NSAIDs)
--   Combined oral hormonal contraceptives
--   Ulipristal acetate
--   Danazol
--   Gonadotropin releasing hormone analogues
--   Intrauterine devices
+-   Amitriptyline
+-   Benzodiazepines
+-   Citalopram
+-   Clonidine
+-   Escitalopram
+-   Estrogens
+-   Estrogens Combinations
+-   Fluoxetine
+-   Gabapentin
+-   Paroxetine
+-   Pregabalin
+-   Progestogens
+-   Progestogens & Estrogens
+-   Raloxifene
+-   Sertraline
+-   Venlafaxine
 
-For the treatment patterns analysis, a set of drug exposure cohorts will be defined, where the index event of each cohort is prescription of one of the drugs of interest during the study period. People remain in the cohort if they satisfy the selection criteria for the study cohort.   A person's time in the cohort prior to exit is determined by a drug era. The drug era is the span of time a person is considered continuously exposed to the same treatment. Eras are built by binding successive drug exposure events into a single duration where the person is inferred to be continuing use of that same treatment. A maximum of 30 days between drug exposure records are allowed to consider these exposures as a part of the same era. Thus, if a person has two of the same drug exposures within 30 days of each other, they are bundled into one era where the time elapsed is marked by the date of the successive exposure. This also means that if there is a gap greater than 30 days between the same treatment, this would indicate two separate eras in the treatment history for the individual person. A person is observed in the drug exposure cohort until either the end of a continuous era or one of the following censoring events, whichever occurs first:
+For the four cohorts, treatment pathways composed of the treatments of interest (defined in section 9.3.1) prescribed to manage symptoms of menopause are identified. A treatment pathway is the sequence of treatments starting from the index date and ending at the end of the study period (section 9.2.2). When defining treatment pathways, the term era is used to refer to the span of time a woman is considered "exposed" to a treatment of interest. An era is constructed based on rules that combine successive periods of drug exposure into a continuous period. The minimum era duration determines the minimum duration for an era to be considered in the study; for this study there is no minimum era duration. The maximum time interval between two subsequent eras of the same treatments to collapse into the same era is 30 days (shown as eraCollapseSize in Figure 8). This means that if there is a gap greater than 30 days between the same treatment, this would indicate two separate eras in the pathway. A treatment combination is defined as an interval when a patient has two treatment eras overlapping in time. The minimum overlap time required between multiple treatments to be considered a combination is 30 days (shown as combinationWindow in Figure 8). The minimum time that a treatment era (before or after a combination of treatments) must last in order to be included as a separate treatment in the pathways is 30 days (shown as minPostCombinationDuration in Figure 8). This means that if treatment is observed for less than 30 days before or after a combination it is not considered as part of the sequence. Finally, only treatment changes are reported in the path, meaning we remove repeated treatments in the pathway and only report when a change occurs (shown as filterTreatments in Figure 8). The basis of our treatment sequence definition comes from Markus et al (32).
 
-- end of continuous observation in the database
-- at least one visit occurrence at age > 55 years
-- menopause (induced or natural)
-- hysterectomy or bilateral oophorectomy
-- uterine or ovarian cancer
-- pregnancy
-- death
+![Figure 8: Treatment Patterns Design](images/tx_design.png)
 
-
-Treatment discontinuation is defined when there is a gap of at least 30 days between successive exposures of the same treatment. A treatment combination is defined as an overlap in two different exposures of at least 30 days. This means if two drugs are being taken by the same patient for at least 30 days it is considered a treatment combination. If the overlap of two drugs is less than 30 days, it is considered a switch to the drug whose era persists. For example, if drug A starts first and then overlaps with drug B for 15 days, with drug B continuing onward, the treatment history would consider this a switch from drug A to drug B and no combination. 
-
-For the procedure analysis as a part of treatment patterns, we define cohorts where the index event for the procedure cohort is a first time occurrence of one of the procedures of interest in the patient history. Women in the procedure cohort must have at least 365 days of prior observation. 
-
-
-Treatment procedures of interest are:
-
-- Hysterectomy
-- Endometrial ablation
-- Uterine artery embolization (UAE)
-- Myomectomy
-
-
-### Prevalence of Drug Exposures {#sec-prevDrugExp} 
-
-The first metric under treatment patterns analysis is the prevalence of drug exposure over a set of defined time intervals. Prevalence is defined as the proportion of the study population who had the records of the treatments of interest during the interval. The time windows for the prevalence of drug exposures for women in the HMB cohort are: at index, 1 to 183 days, 184 to 365 days, 366 to 730 days, and 731 to 1825 days post index. Counts and percentages for each drug exposure cohort (from the listed above) will be reported at each time window.
-
+In addition to enumerating treatment pathways, the study is also interested in estimating the duration (in days) that a woman is continuously prescribed a particular treatment (or conversely the time until they stop the treatment). This duration is determined by the length of time for a particular treatment era. Discontinuation of a treatment is identified as a switch to a different drug or the woman has turned 65 years old. Any gap more than 30 days would be considered treatment discontinuation. An observation is censored if a switch is not determined based on end of continuous observation or end of the study period. As a part of a sensitivity analysis, a gap of 60 days will be considered for treatment discontinuation.
 
 ### Treatment Pathways {#sec-txSeq}
 
-For each female with HMB, the sequence of treatments taken throughout the patient history will be characterized. The first 15 sequences will be reported for each database where each sequence must have a minimum of 10 unique persons to be included in the treatment pathways report. Treatment procedures will be handled differently The treatment sequence results will be displayed using a Sankey diagram, complemented by a summary table that shows the enumeration of each specific sequence. 
+In addition to characterizations of patients, treatment patterns of all the target cohorts of the primary and exploratory objectives will be assessed. First, the unique pathways in the study population will be counted and visualized using Sankey diagrams. Pathways with at least 30 patients will only be considered in the analysis. Treatment pathways from the index date for the four target cohorts defined in section @sec-design will be constructed. In addition to the Sankey diagrams, a table enumerating the number of unique sequences and describing the number of patients who received a different pattern as a first-, second-, or third-line treatment will be provided.
 
 ### Time to Discontinuation {#sec-ttd}
 
-Using the treatment history, we calculate the median (and 95% confidence interval) time spent on a specific drug using the Kaplan-Meier (KM) methodology. Events are censored if the persons had any kind of healthcare interaction at age > 55 years, menopause (induced or natural), hysterectomy or bilateral oophorectomy, uterine or ovarian cancer, pregnancy or all-cause mortality. Combinations of treatments will be handled as its own era in the calculation of time to discontinuation. 
+Following description of treatment patterns, the analysis will continue by describing the time to treatment discontinuation. For this portion of the analysis, the median time to discontinuation will be described by calculating the survival curve using Kaplan-Meier plots along with two-sided 95% confidence interval (CI). Also, the probability of survival and confidence interval will be calculated for continuing treatment at 6 months, 1 year, and 2-year intervals. Time to discontinuation will also be stratified by calendar year.
 
+## Incidence Analysis
 
-## Incidence Analysis (Exploratory) 
-
-### Overall Incidence
-
-The overall and yearly incidence rate of HMB is calculated in each participating database. The numerator in the incidence calculation is the HMB target cohort defined in Section 4.1 and the denominator is the cohort of women with a healthcare visit as defined in Section 4.1.1. Incidence rate is defined based on the following formula:
+For the target cohorts of the primary objective, the incidence rate (per 1,000 person years) of symptomatic events of menopause, described in section @sec-outcomes will be calculated. The purpose of the incidence analysis of subsequent symptoms of menopause is to contextualize utilization of treatments for menopause post index in the same periods of time. Incidence of these subsequent symptoms, following index menopausal diagnosis, may change the course of treatment for a woman seeking symptomatic relief of menopause. The time-at-risk for the symptomatic events are defined as 0-183, 184-365 and 366-730 and 731-1825 past the cohort index start date, which are the same as the utilization windows to provide context to potential shifts in prescription's due to symptoms. In addition, incidence analysis of the drug classes described in section @sec-exposure, and the ingredients described in section @sec-TxPat will be calculated for the same target cohorts and time windows as for the symptoms of menopause described above. The formula used to calculate the incidence rates is shown below:
 
 $$
 IR = \frac{\text{Number of new cases in time period}}{\text{Total person-time of the at risk population}} \times 1000
-$$ 
+$$
 
-The incidence of HMB will be reported overall and per calendar year to show any variation over time. The incidence will be calculated using the CohortIncidence package from HADES [@ci].
+The incidence will be calculated using the CohortIncidence package from HADES [@ci].
 
-### Guideline Compliance
-
-
-The assessment of country-specific guideline compliant treatment use will only be conducted for countries for which national treatment guidelines are available for HMB. For this outcome, treatment patterns analysis will be implemented in the same way as described in @sec-prevDrugExp and @sec-txSeq. Based on the relevant national guidelines, recommended treatments will be categorized together under the same group for which the prevalence of exposures after index and the proportion for those treatments that were first line in the treatment pathways analysis will be reported. This section will be updated pending internal review...please wait for further details
-
-
-```{r}
-#| label: tbl-guidlines
-#| echo: false
-#| eval: false
-#| tbl-cap: Country Guidelines for HMB Treatment
-
-guidelineCompliance <- tibble::tribble(
-  ~Country, ~Compliant,
-  "UK", "Plastic IUD with progestogen as first line treatment",
-  "US", "Combined hormonal contraceptives, oral and injectable progestins, and plastic IUD with progestogen as first-line treatment."
-)
-
-knitr::kable(guidelineCompliance)
-
-```
-
-<!---
-
-**Guideline Recommendation**
-
-- United Kingdom
-    - The following treatment options for HMB should be considered: 
-        - the woman's preferences 
-        - any comorbidities 
-        - the presence or absence of fibroids (including size, number and location), polyps or endometrial pathology 
-        - other symptoms, such as pressure and pain
-    - LNG-IUD could be considered as the first treatment for HMB in women with either: 
-        - no identified pathology 
-        - fibroids less than 3cm in diameter, which are not causing distortion of the uterine cavity
-- United States
-    - Adolescents: After correction of acute heavy menstrual bleeding, maintenance hormonal therapy can include combined hormonal contraceptives, oral and injectable progestins, and levonorgestrel-releasing intrauterine devices (LNG-IUDs).
-    - Non-pregnant reporductive age women: Medical  therapy is considered the preferred initial treatment, if clinically appropriate. Options include IV conjugated equine estrogen, multi-dose regimens of OCs or oral progestins, and tranexamic acid. Decisions should be based on the patient’s medical history and contraindications to therapies. 
-    - Once the acute bleeding episode has been controlled, transitioning the patient to long-term maintenance therapy is recommended.
-    
---->  
 # References
 
 ::: {#refs}
